@@ -22,6 +22,6 @@ const UP = [
   ['SKILL: BLACK HOLE (R)', 'lubang hitam menyedot & melukai musuh', () => P.sk.r++],
   ['CHAIN LIGHTNING', 'peluru memicu petir ke musuh terdekat', () => P.ch++],
   ['EXPLOSIVE ROUNDS', 'peluru meledak area kecil', () => P.boom++],
-  ['VAMPIRISM', 'setiap kill memulihkan HP', () => P.vamp++],
+  ['VAMPIRISM', 'setiap kill memulihkan HP (makin besar tiap wave)', () => P.vamp++],
   ['CRITICAL', '+20% peluang crit (damage x3.5)', () => (P.crit += 0.2)],
 ];

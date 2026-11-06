@@ -5,7 +5,7 @@ function kill(e, i) {
   combo++;
   score += Math.round(e.xp * 10 * (1 + Math.min(combo, 50) * 0.1));
   kills++;
-  if (P.vamp) P.hp = Math.min(P.mh, P.hp + P.vamp * 0.6);
+  if (P.vamp) P.hp = Math.min(P.mh, P.hp + vampHeal());
   RG.push({ x: e.x, y: e.y, r: 0, mr: e.r * 2.8, c: e.c, w: 3, l: 0.3, m: 0.3 });
   pf(e.x, e.y, e.k == 'boss' ? 80 : 12, e.c, e.k == 'boss' ? 500 : 220, e.k == 'boss' ? 1.2 : 0.5);
   shake = Math.max(shake, e.k == 'boss' ? 20 : 3);

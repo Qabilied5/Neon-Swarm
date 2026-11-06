@@ -47,17 +47,20 @@ function sup(e, dt, d, ux, uy) {
   e.ac -= dt;
   e.as -= dt;
   if (e.at == 'spiral' && e.as <= 0) {
-    e.as = 0.09 / rg;
-    for (let j = 0; j < 4; j++) sh(e.ang + (j * TAU) / 4, 210, 14);
+    e.as = mob(0.16, 0.09) / rg;
+    const sn = mob(3, 4);
+    for (let j = 0; j < sn; j++) sh(e.ang + (j * TAU) / sn, mob(180, 210), 14);
     e.ang += 0.23;
   } else if (e.at == 'rings' && e.as <= 0) {
     e.as = 0.6 / rg;
     e.cn++;
     const o = R(0, TAU);
-    for (let j = 0; j < 32; j++) sh(o + (j * TAU) / 32, 160 + e.cn * 22, 16, 7);
+    const rn = mob(18, 32);
+    for (let j = 0; j < rn; j++) sh(o + (j * TAU) / rn, mob(140, 160) + e.cn * 22, 16, 7);
   } else if (e.at == 'aim' && e.as <= 0) {
-    e.as = 0.4 / rg;
-    for (let j = -2; j <= 2; j++) sh(A + j * 0.13, 440, 20, 7);
+    e.as = mob(0.6, 0.4) / rg;
+    const an = mob(1, 2);
+    for (let j = -an; j <= an; j++) sh(A + j * mob(0.16, 0.13), mob(360, 440), 20, 7);
   } else if (e.at == 'beams' && e.as <= 0) {
     e.as = 0.85 / rg;
     for (const o of rg > 1 ? [-0.45, 0, 0.45] : [0])

@@ -12,8 +12,9 @@ function updEnemies(dt) {
       e.y += uy * e.sp * m * dt;
       e.cd -= dt;
       if (e.cd < 0) {
-        e.cd = 2;
-        EB.push({ x: e.x, y: e.y, vx: ux * 230, vy: uy * 230, r: 5, d: 10, life: 4 });
+        e.cd = mob(3, 2); // HP: tembak lebih jarang & peluru lebih lambat
+        const sv = mob(190, 230);
+        EB.push({ x: e.x, y: e.y, vx: ux * sv, vy: uy * sv, r: 5, d: 10, life: 4 });
       }
     } else if (e.k == 'boss' && e.sec) secretBoss(e, dt);
     else if (e.k == 'boss' && e.sup) sup(e, dt, d, ux, uy);
@@ -28,15 +29,15 @@ function updEnemies(dt) {
       }
       e.cd -= dt;
       if (e.cd < 0) {
-        e.cd = 2.2;
-        const n = 14 + wave;
+        e.cd = mob(3, 2.2);
+        const n = mob(Math.min(8 + (wave >> 1), 14), 14 + wave); // HP: jumlah peluru ~ setengah
         for (let j = 0; j < n; j++) {
           const a = (j * TAU) / n + e.ph;
           EB.push({
             x: e.x,
             y: e.y,
-            vx: Math.cos(a) * 190,
-            vy: Math.sin(a) * 190,
+            vx: Math.cos(a) * mob(165, 190),
+            vy: Math.sin(a) * mob(165, 190),
             r: 6,
             d: 12,
             life: 5,
@@ -94,14 +95,15 @@ function updEnemies(dt) {
       e.y += uy * e.sp * m * dt;
       e.cd -= dt;
       if (e.cd < 0) {
-        e.cd = 2;
-        const a = Math.atan2(uy, ux);
-        for (let j = -1; j <= 1; j++)
+        e.cd = mob(2.8, 2);
+        const a = Math.atan2(uy, ux),
+          gn = mob(1, 3); // HP: 1 peluru (desktop 3 menyebar)
+        for (let j = 0; j < gn; j++)
           EB.push({
             x: e.x,
             y: e.y,
-            vx: Math.cos(a + j * 0.22) * 310,
-            vy: Math.sin(a + j * 0.22) * 310,
+            vx: Math.cos(a + (j - (gn - 1) / 2) * 0.22) * mob(250, 310),
+            vy: Math.sin(a + (j - (gn - 1) / 2) * 0.22) * mob(250, 310),
             r: 5,
             d: 14,
             life: 4,
@@ -144,15 +146,16 @@ function updEnemies(dt) {
       e.y += uy * e.sp * m * dt;
       e.cd -= dt;
       if (e.cd < 0) {
-        e.cd = 2.6;
+        e.cd = mob(3.4, 2.6);
         e.ph = (e.ph || 0) + 0.4;
-        for (let j = 0; j < 12; j++) {
-          const a = (j * TAU) / 12 + e.ph;
+        const rn = mob(6, 12); // HP: 6 peluru per cincin (desktop 12)
+        for (let j = 0; j < rn; j++) {
+          const a = (j * TAU) / rn + e.ph;
           EB.push({
             x: e.x,
             y: e.y,
-            vx: Math.cos(a) * 200,
-            vy: Math.sin(a) * 200,
+            vx: Math.cos(a) * mob(170, 200),
+            vy: Math.sin(a) * mob(170, 200),
             r: 5,
             d: 13,
             life: 5,
