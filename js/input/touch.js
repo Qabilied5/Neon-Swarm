@@ -9,7 +9,7 @@ const SK_AIMABLE = { q: 1, e: 1, r: 1 };
 // BIDIK SERANGAN DASAR: tahan di mana saja di sisi kanan layar -> muncul lingkaran bidik (reticle) di dunia game.
 // Geser jari = lingkaran ikut bergerak (relatif, bisa ke mana saja di layar). Pemain menembak ke arah lingkaran.
 // Posisi lingkaran disimpan sebagai offset (AIM.ox, AIM.oy) dari pemain, jadi ikut bergerak bersama pemain.
-const AIM_GAIN = 2.2; // 1 satuan geser jari = 2.2 satuan gerak lingkaran (jangkauan luas tanpa harus geser jauh)
+const AIM_GAIN = 3.6; // 1 satuan geser jari = 3.6 satuan gerak lingkaran (sensitif: banting sisi kanan -> kiri cukup geser sedikit)
 const AIM_START = 200; // jarak awal lingkaran dari pemain saat tombol pertama ditahan
 
 // mulai bidik: lingkaran muncul di arah bidik terakhir
