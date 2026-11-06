@@ -1,0 +1,44 @@
+// Semua variabel state global game (P, E, B, wave, score, S=state layar, dll)
+const K = {},
+  M = { x: 0, y: 0 };
+let TOUCH = matchMedia('(pointer:coarse)').matches,
+  fsTried = 0;
+const JS = { on: 0, id: null, ox: 0, oy: 0, x: 0, y: 0 };
+let HZ = [],
+  RG = [],
+  AR = [],
+  FT = [],
+  BM = [],
+  VX = [],
+  combo = 0,
+  comboT = 0,
+  stop = 0;
+let S = 'menu',
+  P,
+  B = [],
+  E = [],
+  EB = [],
+  O = [],
+  PT = [],
+  t = 0,
+  T = 0,
+  wave = 1,
+  waveT = 0,
+  score = 0,
+  kills = 0,
+  spawnT = 0,
+  boss = null,
+  cards = [],
+  shake = 0,
+  msg = '',
+  sub = '',
+  msgT = 0,
+  taunt = '',
+  epi = '',
+  deadT = 0,
+  flash = 0,
+  mute = false,
+  best = 0;
+try {
+  best = +localStorage.getItem('ns_best') || 0;
+} catch (e) {}

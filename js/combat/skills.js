@@ -1,0 +1,52 @@
+// Skill aktif: nova() Q, laser() E, hole() R
+function nova() {
+  if (!P.sk.q || P.cd.q > 0) return;
+  P.cd.q = Math.max(3, 9 - P.sk.q);
+  const r = 210 + P.sk.q * 35,
+    d = 40 + P.dmg * 3;
+  RG.push(
+    { x: P.x, y: P.y, r: 0, mr: r, c: '#22d3ee', w: 8, l: 0.55, m: 0.55 },
+    { x: P.x, y: P.y, r: 0, mr: r * 0.7, c: '#fff', w: 3, l: 0.4, m: 0.4 },
+  );
+  for (const e of E) {
+    const dd = Math.hypot(e.x - P.x, e.y - P.y) || 1;
+    if (dd < r + e.r) {
+      hit(e, d);
+      if (e.k != 'boss') {
+        e.x += ((e.x - P.x) / dd) * 110;
+        e.y += ((e.y - P.y) / dd) * 110;
+      }
+    }
+  }
+  for (let i = EB.length - 1; i >= 0; i--)
+    if (Math.hypot(EB[i].x - P.x, EB[i].y - P.y) < r) {
+      pf(EB[i].x, EB[i].y, 3, '#ff2e63', 100, 0.3);
+      EB.splice(i, 1);
+    }
+  shake = Math.max(shake, 9);
+  pf(P.x, P.y, 40, '#22d3ee', 420, 0.7);
+  snd(120, 0.4, 'sawtooth', 0.08);
+}
+function laser() {
+  if (!P.sk.e || P.cd.e > 0) return;
+  P.cd.e = Math.max(3, 8 - P.sk.e);
+  const ux = Math.cos(P.a),
+    uy = Math.sin(P.a),
+    d = 70 + P.dmg * 5;
+  for (const e of E) {
+    const px = e.x - P.x,
+      py = e.y - P.y;
+    if (px * ux + py * uy > 0 && Math.abs(px * uy - py * ux) < e.r + 12 + P.sk.e * 3) hit(e, d);
+  }
+  BM.push({ x: P.x, y: P.y, a: P.a, l: 0.35, m: 0.35 });
+  for (let i = 0; i < 30; i++) pf(P.x + ux * i * 40, P.y + uy * i * 40, 1, '#ff2e63', 90, 0.5);
+  shake = Math.max(shake, 12);
+  snd(70, 0.35, 'sawtooth', 0.09);
+  snd(1200, 0.2, 'square', 0.03);
+}
+function hole() {
+  if (!P.sk.r || P.cd.r > 0) return;
+  P.cd.r = Math.max(6, 14 - P.sk.r * 1.5);
+  VX.push({ x: M.x, y: M.y, l: 3.5, m: 3.5, r: 170 + P.sk.r * 25 });
+  snd(80, 0.6, 'sine', 0.09);
+}
