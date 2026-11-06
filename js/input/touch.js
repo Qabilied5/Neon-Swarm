@@ -18,9 +18,9 @@ const LT = { t: 0, x: 0, y: 0 }; // tap singkat terakhir di sisi kiri (waktu, po
 const LM = { x: 0, y: 0 }; // arah gerak terakhir pemain (vektor satuan) = arah dash bawaan jika stik tidak digeser
 
 // FLICK DASH: hentakan cepat jari pada stik gerak
-const FLICK_WIN = 110, // ms: jendela waktu untuk mengukur kecepatan geser
-  FLICK_DIST = 60, // px (x skala UI): jarak minimum geser dalam jendela itu
-  FLICK_SPD = 900, // px/detik: kecepatan minimum agar dihitung hentakan (geser biasa jauh lebih lambat)
+const FLICK_WIN = 100, // ms: jendela waktu untuk mengukur kecepatan geser
+  FLICK_DIST = 30, // px: jarak minimum geser dalam jendela itu
+  FLICK_SPD = 600, // px/detik: kecepatan minimum agar dihitung hentakan (geser biasa jauh lebih lambat)
   FLICK_LOCK = 350; // ms: jeda antar flick dash
 const JH = []; // riwayat posisi jari stik gerak {t,x,y}
 let flickT = 0;
@@ -34,7 +34,7 @@ function flickCheck(x, y) {
     dy = y - a.y,
     d = Math.hypot(dx, dy),
     dt = Math.max(now - a.t, 16);
-  if (d >= FLICK_DIST * tui().u && (d / dt) * 1000 >= FLICK_SPD) {
+  if (d >= FLICK_DIST && (d / dt) * 1000 >= FLICK_SPD) {
     flickT = now;
     JH.length = 0;
     dash(Math.atan2(dy, dx)); // arah = arah hentakan jari
