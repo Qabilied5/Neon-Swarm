@@ -1,8 +1,9 @@
 // Layout & klik kartu upgrade
 const cl3 = () => {
-  const cw = Math.min(230, (W - 60) / 3),
+  const sw = W - SAFE.l - SAFE.r, // lebar area aman (di luar notch)
+    cw = Math.min(230, (sw - 60) / 3),
     gp = 20,
-    x0 = (W - (3 * cw + 2 * gp)) / 2;
+    x0 = SAFE.l + (sw - (3 * cw + 2 * gp)) / 2;
   return { cw, gp, x0, ch: 170, y0: H / 2 - 85 };
 };
 function cardAt(x, y) {

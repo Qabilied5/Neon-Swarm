@@ -1,9 +1,32 @@
 // Layar menu, pause, level-up, game over
 function drawMenu() {
-  const big = Math.min(84, W / 8);
-  if (S == 'menu') {
-    tx('NEON SWARM', W / 2, H * 0.36, big, '#22d3ee', 'center', 30);
-    tx('bertahan hidup dari kawanan neon', W / 2, H * 0.36 + 34, 16, '#7aa2c0');
+  if (S != 'menu') return;
+  const big = Math.min(84, W / 8, H / 4.5),
+    ty = H * (TOUCH ? 0.27 : 0.36);
+  tx('NEON SWARM', W / 2, ty, big, '#22d3ee', 'center', 30);
+  tx('bertahan hidup dari kawanan neon', W / 2, ty + (TOUCH ? big * 0.45 : 34), 16, '#7aa2c0');
+  let sy;
+  if (TOUCH) {
+    // petunjuk kontrol sentuh (landscape): font mengecil di layar sempit
+    const sz = cl(W / 60, 10, 14),
+      y0 = ty + big * 0.45 + 34,
+      lines = [
+        [
+          'STIK KIRI = gerak  ·  TOMBOL SERANG = geser untuk membidik (lepas = bidik otomatis)',
+          '#39ff88',
+        ],
+        [
+          'Di sekeliling tombol serang: DASH · Q NOVA · E LASER · R BLACK HOLE · ✚ HEAL +30%',
+          '#ffd166',
+        ],
+        [
+          'WAVE 6+ musuh berevolusi  ·  WAVE 8+ 3 tabrakan = MATI  ·  WAVE 15+ super boss',
+          '#ff8da1',
+        ],
+      ];
+    lines.forEach((l, i) => tx(l[0], W / 2, y0 + i * (sz + 9), sz, l[1]));
+    sy = y0 + lines.length * (sz + 9) + 26;
+  } else {
     tx(
       'WASD gerak  ·  MOUSE bidik (tembak otomatis)  ·  SPACE / klik kanan dash',
       W / 2,
@@ -32,37 +55,38 @@ function drawMenu() {
       13,
       '#7aa2c0',
     );
-    const sy = TOUCH ? Math.max(H * 0.7, H * 0.56 + 124) : H * 0.7;
-    if (TOUCH)
-      tx(
-        'SENTUH: stik kiri = gerak · bidik otomatis · tombol kanan = DASH / Q / E / R',
-        W / 2,
-        H * 0.56 + 98,
-        13,
-        '#39ff88',
-      );
-    tx(
-      Math.floor(T * 2) % 2
-        ? TOUCH
-          ? 'SENTUH LAYAR UNTUK MULAI'
-          : 'KLIK ATAU TEKAN ENTER UNTUK MULAI'
-        : '',
-      W / 2,
-      sy,
-      20,
-      '#ffd166',
-      'center',
-      12,
-    );
-    if (best) tx('REKOR ' + best, W / 2, sy + 28, 14, '#7aa2c0');
+    sy = H * 0.7;
   }
+  tx(
+    Math.floor(T * 2) % 2
+      ? TOUCH
+        ? 'SENTUH LAYAR UNTUK MULAI'
+        : 'KLIK ATAU TEKAN ENTER UNTUK MULAI'
+      : '',
+    W / 2,
+    sy,
+    20,
+    '#ffd166',
+    'center',
+    12,
+  );
+  if (best) tx('REKOR ' + best, W / 2, sy + 28, 14, '#7aa2c0');
+  // iPhone/iPad (Safari) tidak punya tombol install otomatis
+  if (IOS && !STANDALONE)
+    tx('Instal: tombol Bagikan → "Tambah ke Layar Utama"', W / 2, H - SAFE.b - 12, 12, '#7aa2c0');
 }
 function drawPause() {
   if (S == 'pause') {
     g.fillStyle = 'rgba(0,0,0,.6)';
     g.fillRect(0, 0, W, H);
     tx('PAUSE', W / 2, H / 2, 60, '#22d3ee', 'center', 20);
-    tx('tekan P untuk lanjut', W / 2, H / 2 + 34, 16, '#7aa2c0');
+    tx(
+      TOUCH ? 'sentuh layar untuk lanjut' : 'tekan P untuk lanjut',
+      W / 2,
+      H / 2 + 34,
+      16,
+      '#7aa2c0',
+    );
   }
 }
 function drawLevelup() {
@@ -72,7 +96,9 @@ function drawLevelup() {
     const c = cl3(),
       hv = cardAt(M.x, M.y);
     tx(
-      'LEVEL UP!  pilih upgrade (klik atau tekan 1/2/3)',
+      TOUCH
+        ? 'LEVEL UP!  sentuh upgrade pilihanmu'
+        : 'LEVEL UP!  pilih upgrade (klik atau tekan 1/2/3)',
       W / 2,
       c.y0 - 30,
       Math.min(22, W / 30),

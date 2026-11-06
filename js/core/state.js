@@ -3,7 +3,8 @@ const K = {},
   M = { x: 0, y: 0 };
 let TOUCH = matchMedia('(pointer:coarse)').matches,
   fsTried = 0;
-const JS = { on: 0, id: null, ox: 0, oy: 0, x: 0, y: 0 };
+const JS = { on: 0, id: null, ox: 0, oy: 0, x: 0, y: 0 }; // stik kiri (gerak)
+const AIM = { on: 0, id: null, man: 0, x: 1, y: 0, kx: 0, ky: 0 }; // tombol serang kanan (bidik): man=1 jika digeser keluar deadzone
 let HZ = [],
   RG = [],
   AR = [],

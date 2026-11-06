@@ -7,54 +7,75 @@
       content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
     />
     <title>NEON SWARM</title>
-    <link rel="stylesheet" href="css/style.css?v=4" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#04060d" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="NEON SWARM" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="css/style.css?v=5" />
   </head>
   <body>
     <canvas id="c"></canvas>
+    <div id="safe"></div>
+    <button id="install" type="button">⬇ INSTAL APP</button>
+    <div id="rotate" role="alert">
+      <div class="phone"></div>
+      <p>Putar perangkat ke mode <b>landscape</b></p>
+    </div>
 
     <!-- Urutan penting: semua file berbagi scope global. main.js harus terakhir. -->
-    <script src="js/core/canvas.js?v=4"></script>
-    <script src="js/core/utils.js?v=4"></script>
-    <script src="js/core/state.js?v=4"></script>
-    <script src="js/core/audio.js?v=4"></script>
-    <script src="js/core/ai.js?v=4"></script>
-    <script src="js/data/texts.js?v=4"></script>
-    <script src="js/data/upgrades.js?v=4"></script>
-    <script src="js/data/enemies.js?v=4"></script>
-    <script src="js/data/config.js?v=4"></script>
-    <script src="js/game/init.js?v=4"></script>
-    <script src="js/game/effects.js?v=4"></script>
-    <script src="js/game/player.js?v=4"></script>
-    <script src="js/enemies/spawn.js?v=4"></script>
-    <script src="js/enemies/boss.js?v=4"></script>
-    <script src="js/enemies/superboss.js?v=4"></script>
-    <script src="js/enemies/secretboss.js?v=4"></script>
-    <script src="js/combat/damage.js?v=4"></script>
-    <script src="js/combat/skills.js?v=4"></script>
-    <script src="js/update/player.js?v=4"></script>
-    <script src="js/update/waves.js?v=4"></script>
-    <script src="js/update/bullets.js?v=4"></script>
-    <script src="js/update/enemies.js?v=4"></script>
-    <script src="js/update/projectiles.js?v=4"></script>
-    <script src="js/update/pickups.js?v=4"></script>
-    <script src="js/update/fx.js?v=4"></script>
-    <script src="js/update/secretboss.js?v=4"></script>
-    <script src="js/update/index.js?v=4"></script>
-    <script src="js/input/keyboard-mouse.js?v=4"></script>
-    <script src="js/input/touch.js?v=4"></script>
-    <script src="js/ui/cards.js?v=4"></script>
-    <script src="js/ui/buttons.js?v=4"></script>
-    <script src="js/ui/fullscreen.js?v=4"></script>
-    <script src="js/ui/touch-hud.js?v=4"></script>
-    <script src="js/ui/skill-hud.js?v=4"></script>
-    <script src="js/render/primitives.js?v=4"></script>
-    <script src="js/render/background.js?v=4"></script>
-    <script src="js/render/entities.js?v=4"></script>
-    <script src="js/render/effects.js?v=4"></script>
-    <script src="js/render/world.js?v=4"></script>
-    <script src="js/render/hud.js?v=4"></script>
-    <script src="js/render/screens.js?v=4"></script>
-    <script src="js/render/draw.js?v=4"></script>
-    <script src="js/main.js?v=4"></script>
+    <script src="js/core/canvas.js?v=5"></script>
+    <script src="js/core/pwa.js?v=5"></script>
+    <script src="js/core/utils.js?v=5"></script>
+    <script src="js/core/state.js?v=5"></script>
+    <script src="js/core/audio.js?v=5"></script>
+    <script src="js/core/ai.js?v=5"></script>
+    <script src="js/data/texts.js?v=5"></script>
+    <script src="js/data/upgrades.js?v=5"></script>
+    <script src="js/data/enemies.js?v=5"></script>
+    <script src="js/data/config.js?v=5"></script>
+    <script src="js/game/init.js?v=5"></script>
+    <script src="js/game/effects.js?v=5"></script>
+    <script src="js/game/player.js?v=5"></script>
+    <script src="js/enemies/spawn.js?v=5"></script>
+    <script src="js/enemies/boss.js?v=5"></script>
+    <script src="js/enemies/superboss.js?v=5"></script>
+    <script src="js/enemies/secretboss.js?v=5"></script>
+    <script src="js/combat/damage.js?v=5"></script>
+    <script src="js/combat/skills.js?v=5"></script>
+    <script src="js/update/player.js?v=5"></script>
+    <script src="js/update/waves.js?v=5"></script>
+    <script src="js/update/bullets.js?v=5"></script>
+    <script src="js/update/enemies.js?v=5"></script>
+    <script src="js/update/projectiles.js?v=5"></script>
+    <script src="js/update/pickups.js?v=5"></script>
+    <script src="js/update/fx.js?v=5"></script>
+    <script src="js/update/secretboss.js?v=5"></script>
+    <script src="js/update/index.js?v=5"></script>
+    <script src="js/input/keyboard-mouse.js?v=5"></script>
+    <script src="js/input/touch.js?v=5"></script>
+    <script src="js/ui/cards.js?v=5"></script>
+    <script src="js/ui/buttons.js?v=5"></script>
+    <script src="js/ui/fullscreen.js?v=5"></script>
+    <script src="js/ui/touch-layout.js?v=5"></script>
+    <script src="js/ui/touch-hud.js?v=5"></script>
+    <script src="js/ui/skill-hud.js?v=5"></script>
+    <script src="js/render/primitives.js?v=5"></script>
+    <script src="js/render/background.js?v=5"></script>
+    <script src="js/render/entities.js?v=5"></script>
+    <script src="js/render/aim.js?v=5"></script>
+    <script src="js/render/effects.js?v=5"></script>
+    <script src="js/render/world.js?v=5"></script>
+    <script src="js/render/hud.js?v=5"></script>
+    <script src="js/render/screens.js?v=5"></script>
+    <script src="js/render/draw.js?v=5"></script>
+    <script src="js/main.js?v=5"></script>
   </body>
 </html>

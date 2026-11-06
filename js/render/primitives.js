@@ -11,7 +11,7 @@ function poly(x, y, r, n, rot) {
 }
 const neon = (c, f) => {
   g.shadowColor = c;
-  g.shadowBlur = 14;
+  g.shadowBlur = TOUCH ? 6 : 14; // glow lebih ringan di HP
   g.strokeStyle = c;
   g.fillStyle = f || c + '22';
   g.lineWidth = 2;

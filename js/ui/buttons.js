@@ -1,8 +1,14 @@
 // Tombol UI kecil (fullscreen, pause) + hit test
 function uiBtns() {
   if (S == 'dead') return [];
-  const b = [{ k: 'fs', x: W - 26, y: 84, r: 20 }];
-  if (TOUCH && (S == 'play' || S == 'pause')) b.push({ k: 'pause', x: W - 74, y: 84, r: 20 });
+  const b = [];
+  let x = W - SAFE.r - 26;
+  if (!STANDALONE) {
+    // sudah fullscreen saat dipasang sebagai PWA
+    b.push({ k: 'fs', x, y: 84, r: 20 });
+    x -= 48;
+  }
+  if (TOUCH && (S == 'play' || S == 'pause')) b.push({ k: 'pause', x, y: 84, r: 20 });
   return b;
 }
 const uiHit = (x, y) => {

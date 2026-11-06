@@ -7,6 +7,7 @@ function drawWorld() {
   drawEnemies();
   drawOrbitals();
   drawPlayer();
+  drawAim();
   drawHazards();
   drawRings();
   drawBeams();

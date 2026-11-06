@@ -1,4 +1,4 @@
-// Gerak, bidik, dash, tembak otomatis pemain
+// Gerak, bidik (mouse / tombol serang sentuh / auto), dash, tembak otomatis pemain
 function updPlayer(dt) {
   let dx = (K.KeyD || K.ArrowRight ? 1 : 0) - (K.KeyA || K.ArrowLeft ? 1 : 0),
     dy = (K.KeyS || K.ArrowDown ? 1 : 0) - (K.KeyW || K.ArrowUp ? 1 : 0);
@@ -17,7 +17,10 @@ function updPlayer(dt) {
         nn = e;
       }
     }
-    if (nn) P.a = Math.atan2(nn.y - P.y, nn.x - P.x);
+    if (AIM.on && AIM.man)
+      P.a = Math.atan2(AIM.y, AIM.x); // bidik manual: geser tombol serang
+    else if (nn)
+      P.a = Math.atan2(nn.y - P.y, nn.x - P.x); // dilepas / di tengah = bidik otomatis
     else if (JS.on && (JS.x || JS.y)) P.a = Math.atan2(JS.y, JS.x);
     M.x = P.x + Math.cos(P.a) * 220;
     M.y = P.y + Math.sin(P.a) * 220;

@@ -1,19 +1,29 @@
-// Input sentuh: stik analog & tombol skill mobile
-const bs = () => Math.max(0.7, Math.min(1.15, Math.min(W, H) / 450));
-function btns() {
-  const s = bs();
-  return [
-    { k: 'dash', l: 'DASH', c: '#39ff88', x: W - 75 * s, y: H - 75 * s, r: 42 * s, f: dash },
-    { k: 'q', l: 'Q', c: '#22d3ee', x: W - 175 * s, y: H - 55 * s, r: 30 * s, f: nova },
-    { k: 'e', l: 'E', c: '#ff2e63', x: W - 165 * s, y: H - 130 * s, r: 30 * s, f: laser },
-    { k: 'r', l: 'R', c: '#b967ff', x: W - 90 * s, y: H - 170 * s, r: 30 * s, f: hole },
-  ];
+// Input sentuh: jari kiri = stik gerak, jari kanan = tombol serang (geser untuk bidik) + dash/skill
+const TPR = {}; // waktu efek "ditekan" per tombol
+
+// set arah bidik dari posisi jari relatif pusat tombol serang
+function aimFrom(x, y) {
+  const a = tui().atk,
+    dx = x - a.x,
+    dy = y - a.y,
+    m = Math.hypot(dx, dy) || 1;
+  AIM.man = m >= a.dead ? 1 : 0; // di tengah tombol = bidik otomatis
+  if (AIM.man) {
+    AIM.x = dx / m;
+    AIM.y = dy / m;
+  }
+  const k = Math.min(m, a.aimR) / m; // posisi knob (dibatasi radius)
+  AIM.kx = dx * k;
+  AIM.ky = dy * k;
 }
+
 addEventListener(
   'touchstart',
   (e) => {
+    if (e.target && e.target.closest && e.target.closest('#install')) return; // biarkan tombol install bekerja
     e.preventDefault();
     TOUCH = true;
+    if (PORTRAIT) return;
     for (const t of e.changedTouches) {
       const x = t.clientX,
         y = t.clientY;
@@ -31,9 +41,17 @@ addEventListener(
         S = 'play';
         continue;
       }
-      const b = btns().find((b) => Math.hypot(b.x - x, b.y - y) < b.r + 12);
+      const U = tui(),
+        b = U.btns.find((b) => Math.hypot(b.x - x, b.y - y) < b.r + 10);
       if (b) {
         b.f();
+        TPR[b.k] = T + 0.14;
+        continue;
+      }
+      if (!AIM.on && Math.hypot(U.atk.x - x, U.atk.y - y) < U.atk.r * 1.35) {
+        AIM.on = 1;
+        AIM.id = t.identifier;
+        aimFrom(x, y);
         continue;
       }
       if (x < W * 0.5 && !JS.on) {
@@ -51,12 +69,13 @@ addEventListener(
   'touchmove',
   (e) => {
     e.preventDefault();
-    for (const t of e.changedTouches)
+    for (const t of e.changedTouches) {
+      if (AIM.on && t.identifier == AIM.id) aimFrom(t.clientX, t.clientY);
       if (JS.on && t.identifier == JS.id) {
         const dx = t.clientX - JS.ox,
           dy = t.clientY - JS.oy,
           m = Math.hypot(dx, dy),
-          mx = 55;
+          mx = tui().stick.r;
         if (m < 8) {
           JS.x = JS.y = 0;
         } else {
@@ -64,6 +83,7 @@ addEventListener(
           JS.y = dy / Math.max(m, mx);
         }
       }
+    }
   },
   { passive: false },
 );
@@ -73,10 +93,14 @@ const tend = (e) => {
       JS.on = 0;
       JS.x = JS.y = 0;
     }
+    if (AIM.on && t.identifier == AIM.id) {
+      AIM.on = AIM.man = 0;
+      AIM.kx = AIM.ky = 0;
+    }
     if (e.type == 'touchend') {
       const u = uiHit(t.clientX, t.clientY);
       if (u) uiAct(u);
-      else if (!fsTried && S == 'play') {
+      else if (!fsTried && !STANDALONE && S == 'play') {
         fsTried = 1;
         enterFS();
       }

@@ -14,15 +14,17 @@ function drawOverlayFx() {
 }
 function drawHud() {
   if (S != 'menu' && P) {
-    bar(16, 16, 200, 12, P.hp / P.mh, '#ff2e63');
-    tx('HP ' + Math.ceil(P.hp), 20, 42, 12, '#ff8da1', 'left');
-    bar(16, 50, 200, 6, P.xp / P.need, '#ffd166');
-    tx('LV ' + P.lv, 20, 72, 12, '#ffd166', 'left');
+    const L = SAFE.l,
+      Rr = W - SAFE.r;
+    bar(L + 16, 16, 200, 12, P.hp / P.mh, '#ff2e63');
+    tx('HP ' + Math.ceil(P.hp), L + 20, 42, 12, '#ff8da1', 'left');
+    bar(L + 16, 50, 200, 6, P.xp / P.need, '#ffd166');
+    tx('LV ' + P.lv, L + 20, 72, 12, '#ffd166', 'left');
     if (wave >= LET) {
       const n = Math.ceil(P.hp / Math.ceil(P.mh / 3));
       tx(
         '☠ TABRAKAN TERSISA: ' + n,
-        20,
+        L + 20,
         92,
         13,
         n <= 1 ? '#ff2e63' : '#ffb703',
@@ -30,12 +32,12 @@ function drawHud() {
         n <= 1 ? 10 : 0,
       );
     }
-    tx('SCORE ' + score, W - 16, 30, 18, '#39ff88', 'right', 8);
-    tx('BEST ' + best, W - 16, 50, 12, '#7aa2c0', 'right');
+    tx('SCORE ' + score, Rr - 16, 30, 18, '#39ff88', 'right', 8);
+    tx('BEST ' + best, Rr - 16, 50, 12, '#7aa2c0', 'right');
     tx('WAVE ' + wave + '  ·  KILLS ' + kills, W / 2, 28, 14, '#22d3ee', 'center', 6);
     if (boss) {
       const big = boss.sup || boss.sec,
-        bw = big ? 460 : 320;
+        bw = Math.min(big ? 460 : 320, W * 0.45); // jangan menabrak HP/skor di layar sempit
       bar(
         W / 2 - bw / 2,
         40,
