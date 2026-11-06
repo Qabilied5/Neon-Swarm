@@ -1,11 +1,16 @@
 // Aksi pemain: dash(), hurt(), die()
-function dash() {
+// ang opsional (radian): arah dash bebas/analog (dipakai double-tap sisi kiri layar sentuh)
+function dash(ang) {
   if (P.dc > 0 || P.dash > 0) return;
   let dx = (K.KeyD ? 1 : 0) - (K.KeyA ? 1 : 0),
     dy = (K.KeyS ? 1 : 0) - (K.KeyW ? 1 : 0);
   if (JS.on && Math.hypot(JS.x, JS.y) > 0.2) {
     dx = JS.x;
     dy = JS.y;
+  }
+  if (ang != null) {
+    dx = Math.cos(ang);
+    dy = Math.sin(ang);
   }
   if (!dx && !dy) {
     dx = Math.cos(P.a);

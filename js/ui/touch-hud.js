@@ -7,15 +7,15 @@ function touchHud() {
 }
 function drawTBtn(b) {
   const on = b.k == 'dash' || b.k == 'c' || P.sk[b.k],
-    skill = b.k == 'q' || b.k == 'e' || b.k == 'r', // Q/E/R: opacity 30%
+    skill = b.k == 'q' || b.k == 'e' || b.k == 'r', // Q/E/R: opacity 10%
     cd = b.k == 'dash' ? P.dc : P.cd[b.k],
     mx = b.k == 'dash' ? P.dashCD : b.k == 'c' ? HEAL_CD : 9,
     rdy = on && cd <= 0,
     pr = (TPR[b.k] || 0) > T,
     aiming = SK.on && SK.k == b.k,
     r = b.r * (pr ? 1.12 : 1),
-    // skill: 30% (naik sedikit saat ditekan / dibidik agar ada umpan balik); belum terbuka lebih redup
-    al = skill ? (pr || aiming ? 0.6 : on ? 0.3 : 0.15) : on ? 0.9 : 0.3;
+    // skill: 10% (naik sedikit saat ditekan / dibidik agar ada umpan balik); belum terbuka lebih redup
+    al = skill ? (pr || aiming ? 0.6 : on ? 0.1 : 0.05) : on ? 0.9 : 0.3;
   g.globalAlpha = al;
   g.fillStyle = pr ? b.c + '55' : '#0a1220';
   g.strokeStyle = b.c;
