@@ -1,6 +1,8 @@
-// Gambar hazard (+pre-laser), ring, beam, petir, vortex, teks damage, partikel
+// Gambar hazard, pre-laser, ring, beam, petir, vortex, teks damage, partikel
 function drawHazards() {
+  drawLasers();
   for (const h of HZ) {
+    if (h.k == 'laser') continue;
     const k = 1 - h.t / h.m;
     neon('#ff2e63');
     if (h.k == 'ring') {
@@ -14,24 +16,6 @@ function drawHazards() {
       g.beginPath();
       g.arc(h.x, h.y, h.r * k, 0, TAU);
       g.stroke();
-    } else if (h.k == 'laser') {
-      // pre-laser: band kuning = area yang akan terkena, kedip cepat sesaat sebelum menembak
-      const ux = Math.cos(h.a),
-        uy = Math.sin(h.a),
-        L = 2600,
-        blink = h.t < 0.25 && Math.floor(h.t * 40) % 2;
-      neon('#ffd166');
-      g.globalAlpha = 0.08 + 0.2 * k + (blink ? 0.3 : 0);
-      g.lineWidth = h.w + P.r;
-      g.beginPath();
-      g.moveTo(h.x - ux * L, h.y - uy * L);
-      g.lineTo(h.x + ux * L, h.y + uy * L);
-      g.stroke();
-      g.globalAlpha = 0.9;
-      g.lineWidth = 2;
-      g.setLineDash([14, 10]);
-      g.stroke();
-      g.setLineDash([]);
     } else {
       g.globalAlpha = 0.25 + 0.5 * k;
       g.lineWidth = 2 + h.w * 0.5 * k;
@@ -41,6 +25,43 @@ function drawHazards() {
       g.stroke();
     }
   }
+  g.globalAlpha = 1;
+}
+// Pre-laser (peringatan). TANPA shadowBlur: garis layar penuh + blur = sangat berat (frame drop).
+// Glow ditiru dengan goresan berlapis; garis putus-putus digabung jadi satu path.
+function drawLasers() {
+  let n = 0;
+  g.shadowBlur = 0;
+  g.strokeStyle = '#ffd166';
+  g.lineCap = 'butt';
+  for (const h of HZ) {
+    if (h.k != 'laser') continue;
+    n++;
+    const k = 1 - h.t / h.m,
+      ux = Math.cos(h.a),
+      uy = Math.sin(h.a),
+      blink = h.t < 0.25 && Math.floor(h.t * 40) % 2;
+    g.globalAlpha = 0.08 + 0.2 * k + (blink ? 0.3 : 0);
+    g.lineWidth = h.w + P.r; // lebar = area yang akan terkena
+    g.beginPath();
+    g.moveTo(h.x - ux * LASER_LEN, h.y - uy * LASER_LEN);
+    g.lineTo(h.x + ux * LASER_LEN, h.y + uy * LASER_LEN);
+    g.stroke();
+  }
+  if (!n) return;
+  g.globalAlpha = 0.9;
+  g.lineWidth = 2;
+  g.setLineDash([14, 10]);
+  g.beginPath();
+  for (const h of HZ) {
+    if (h.k != 'laser') continue;
+    const ux = Math.cos(h.a),
+      uy = Math.sin(h.a);
+    g.moveTo(h.x - ux * LASER_LEN, h.y - uy * LASER_LEN);
+    g.lineTo(h.x + ux * LASER_LEN, h.y + uy * LASER_LEN);
+  }
+  g.stroke();
+  g.setLineDash([]);
   g.globalAlpha = 1;
 }
 function drawRings() {
@@ -57,15 +78,35 @@ function drawRings() {
 }
 function drawBeams() {
   for (const b of BM) {
-    const k = b.l / b.m;
-    neon('#ff2e63');
-    g.globalAlpha = k;
-    g.lineWidth = 6 + (b.w || 24) * k;
-    g.beginPath();
-    g.moveTo(b.full ? b.x - Math.cos(b.a) * 2600 : b.x, b.full ? b.y - Math.sin(b.a) * 2600 : b.y);
-    g.lineTo(b.x + Math.cos(b.a) * 2600, b.y + Math.sin(b.a) * 2600);
-    g.stroke();
+    const k = b.l / b.m,
+      ux = Math.cos(b.a),
+      uy = Math.sin(b.a),
+      x0 = b.full ? b.x - ux * LASER_LEN : b.x,
+      y0 = b.full ? b.y - uy * LASER_LEN : b.y;
+    if (b.full) {
+      // laser layar penuh: tanpa shadowBlur (berat), glow = goresan lebar transparan + inti putih
+      g.shadowBlur = 0;
+      g.strokeStyle = '#ff2e63';
+      g.globalAlpha = 0.3 * k;
+      g.lineWidth = 12 + (b.w || 24) * 1.4 * k;
+      g.beginPath();
+      g.moveTo(x0, y0);
+      g.lineTo(b.x + ux * LASER_LEN, b.y + uy * LASER_LEN);
+      g.stroke();
+      g.globalAlpha = k;
+      g.lineWidth = 6 + (b.w || 24) * k;
+      g.stroke();
+    } else {
+      neon('#ff2e63');
+      g.globalAlpha = k;
+      g.lineWidth = 6 + (b.w || 24) * k;
+      g.beginPath();
+      g.moveTo(x0, y0);
+      g.lineTo(b.x + ux * LASER_LEN, b.y + uy * LASER_LEN);
+      g.stroke();
+    }
     g.strokeStyle = '#fff';
+    g.globalAlpha = k;
     g.lineWidth = 2 + 4 * k;
     g.stroke();
   }

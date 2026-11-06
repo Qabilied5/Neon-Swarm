@@ -15,3 +15,6 @@ const ORB_R = 100,
 
 // Secret boss muncul di wave ini (wave 15 & 20 lanjut ke super boss setelah dikalahkan)
 const SEC_WAVES = [6, 11, 15, 20];
+
+// Panjang setengah garis laser layar penuh (px) - cukup untuk menutup layar 4K
+const LASER_LEN = 2600;

@@ -13,6 +13,7 @@ function updEnemyBullets(dt) {
   }
 }
 function updHazards(dt) {
+  let lz = 0; // bunyi laser cukup sekali per frame
   for (let i = HZ.length - 1; i >= 0; i--) {
     const h = HZ[i];
     h.t -= dt;
@@ -27,6 +28,10 @@ function updHazards(dt) {
         const dist = Math.abs((P.x - h.x) * Math.sin(h.a) - (P.y - h.y) * Math.cos(h.a));
         if (dist < h.w * 0.5 + P.r * 0.5) hurt(h.d);
         shake = Math.max(shake, 8);
+        if (!lz) {
+          lz = 1;
+          snd(100, 0.25, 'sawtooth', 0.07);
+        }
       } else {
         BM.push({ x: h.x, y: h.y, a: h.a, l: 0.35, m: 0.35 });
         const ux = Math.cos(h.a),
@@ -36,7 +41,7 @@ function updHazards(dt) {
         if (px * ux + py * uy > 0 && Math.abs(px * uy - py * ux) < h.w * 0.6 + P.r) hurt(h.d);
         shake = Math.max(shake, 10);
       }
-      snd(100, 0.2, 'sawtooth', 0.06);
+      if (h.k != 'laser') snd(100, 0.2, 'sawtooth', 0.06);
       HZ.splice(i, 1);
     }
   }
