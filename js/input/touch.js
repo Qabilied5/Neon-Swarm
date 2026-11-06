@@ -1,4 +1,4 @@
-// Input sentuh: jari kiri = stik gerak, jari kanan = tombol serang (geser untuk bidik, TANPA auto aim)
+// Input sentuh: sisi kiri layar = stik gerak (melayang, tanpa UI), sisi kanan layar = serang bebas (tahan + geser untuk bidik, TANPA auto aim)
 // + dash & skill. Skill Q/E/R: tahan -> geser untuk membidik -> lepas untuk menembakkan.
 const TPR = {}; // waktu efek "ditekan" per tombol
 
@@ -6,7 +6,7 @@ const TPR = {}; // waktu efek "ditekan" per tombol
 const SK_RANGE = { q: 230, r: 380 };
 const SK_AIMABLE = { q: 1, e: 1, r: 1 };
 
-// BIDIK SERANGAN DASAR: tahan tombol serang -> muncul lingkaran bidik (reticle) di dunia game.
+// BIDIK SERANGAN DASAR: tahan di mana saja di sisi kanan layar -> muncul lingkaran bidik (reticle) di dunia game.
 // Geser jari = lingkaran ikut bergerak (relatif, bisa ke mana saja di layar). Pemain menembak ke arah lingkaran.
 // Posisi lingkaran disimpan sebagai offset (AIM.ox, AIM.oy) dari pemain, jadi ikut bergerak bersama pemain.
 const AIM_GAIN = 2.2; // 1 satuan geser jari = 2.2 satuan gerak lingkaran (jangkauan luas tanpa harus geser jauh)
@@ -24,20 +24,12 @@ function aimStart(x, y) {
   aimSync();
 }
 
-// geser jari -> geser lingkaran
+// geser jari -> geser lingkaran (tanpa batas jangkauan, hanya dibatasi tepi layar)
 function aimFrom(x, y) {
-  const a = tui().atk;
   AIM.ox += (x - AIM.lx) * AIM_GAIN;
   AIM.oy += (y - AIM.ly) * AIM_GAIN;
   AIM.lx = x;
   AIM.ly = y;
-  // knob kecil di tombol serang (hanya umpan balik visual)
-  const dx = x - a.x,
-    dy = y - a.y,
-    m = Math.hypot(dx, dy) || 1,
-    k = Math.min(m, a.aimR) / m;
-  AIM.kx = dx * k;
-  AIM.ky = dy * k;
   aimSync();
 }
 
@@ -138,7 +130,8 @@ addEventListener(
         }
         continue;
       }
-      if (!AIM.on && Math.hypot(U.atk.x - x, U.atk.y - y) < U.atk.r * 1.35) {
+      if (!AIM.on && x >= W * 0.5) {
+        // seluruh sisi kanan layar = area serang bebas (tahan + geser)
         AIM.on = 1;
         AIM.id = t.identifier;
         aimStart(x, y);

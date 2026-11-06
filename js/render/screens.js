@@ -12,11 +12,11 @@ function drawMenu() {
       y0 = ty + big * 0.45 + 34,
       lines = [
         [
-          'STIK KIRI = gerak  ·  TOMBOL SERANG = geser untuk membidik (lepas = bidik otomatis)',
+          'SISI KIRI LAYAR = gerak  ·  SISI KANAN = tahan & geser untuk menembak / membidik',
           '#39ff88',
         ],
         [
-          'Di sekeliling tombol serang: DASH · Q NOVA · E LASER · R BLACK HOLE · ✚ HEAL +30%',
+          'Tombol kanan bawah: ✚ HEAL +30% · Q NOVA · E LASER · R BLACK HOLE · DASH',
           '#ffd166',
         ],
         [

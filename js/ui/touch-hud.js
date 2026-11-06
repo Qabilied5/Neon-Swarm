@@ -1,66 +1,8 @@
-// Gambar kontrol sentuh: stik kiri, tombol serang (dengan knob bidik), tombol dash & skill
+// Gambar kontrol sentuh: hanya tombol dash, skill & heal.
+// Stik gerak (kiri) dan area serang (kanan) sengaja TANPA UI: sentuh di mana saja di sisi layarnya.
 function touchHud() {
-  const U = tui(),
-    st = U.stick,
-    sx = JS.on ? JS.ox : st.x,
-    sy = JS.on ? JS.oy : st.y;
   g.shadowBlur = 0;
-  // stik kiri
-  g.strokeStyle = '#22d3ee';
-  g.fillStyle = '#22d3ee';
-  g.lineWidth = 3;
-  g.globalAlpha = JS.on ? 0.4 : 0.2;
-  g.beginPath();
-  g.arc(sx, sy, st.r, 0, TAU);
-  g.stroke();
-  g.globalAlpha = JS.on ? 0.45 : 0.15;
-  g.beginPath();
-  g.arc(sx + JS.x * st.r, sy + JS.y * st.r, st.r * 0.44, 0, TAU);
-  g.fill();
-  drawAtkPad(U.atk);
-  for (const b of U.btns) drawTBtn(b);
-  g.globalAlpha = 1;
-}
-// tombol serang: cincin besar + ikon bidik; knob mengikuti jari saat digeser
-function drawAtkPad(a) {
-  const on = AIM.on,
-    c = AIM.man ? '#ff2e63' : '#22d3ee';
-  g.shadowBlur = 0;
-  g.strokeStyle = c;
-  g.lineWidth = 3;
-  g.globalAlpha = on ? 0.55 : 0.3; // transparan: tanpa warna isi, hanya garis
-  g.beginPath();
-  g.arc(a.x, a.y, a.r, 0, TAU);
-  g.stroke();
-  if (on) {
-    g.globalAlpha = 0.25;
-    g.beginPath();
-    g.arc(a.x, a.y, a.aimR, 0, TAU); // jangkauan geser
-    g.stroke();
-  }
-  // ikon crosshair
-  g.globalAlpha = on ? 0.55 : 0.3;
-  g.lineWidth = 2.5;
-  const r = a.r * 0.42;
-  g.beginPath();
-  g.arc(a.x, a.y, r, 0, TAU);
-  for (const [dx, dy] of [
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-  ]) {
-    g.moveTo(a.x + dx * r * 0.6, a.y + dy * r * 0.6);
-    g.lineTo(a.x + dx * r * 1.45, a.y + dy * r * 1.45);
-  }
-  g.stroke();
-  if (on) {
-    g.globalAlpha = 0.5;
-    g.fillStyle = c;
-    g.beginPath();
-    g.arc(a.x + AIM.kx, a.y + AIM.ky, a.r * 0.36, 0, TAU);
-    g.fill();
-  }
+  for (const b of tui().btns) drawTBtn(b);
   g.globalAlpha = 1;
 }
 function drawTBtn(b) {
