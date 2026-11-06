@@ -1,6 +1,7 @@
 // Input sentuh: sisi kiri layar = stik gerak (melayang, tanpa UI), sisi kanan layar = serang bebas (tahan + geser untuk bidik, TANPA auto aim)
 // + dash & skill. Skill Q/E/R: tahan -> geser untuk membidik -> lepas untuk menembakkan.
 // DASH ANALOG: double-tap di sisi kiri layar, tap kedua ditahan -> muncul stik analog dengan jangkauan TETAP; geser ke arah mana saja (360°), lepas = dash.
+// FLICK DASH: saat stik gerak ditahan, geser jari dengan CEPAT & mendadak (hentakan) -> dash ke arah hentakan, tanpa melepas jari.
 // AIM ASSIST: musuh di dalam lingkaran bidik -> peluru diarahkan tepat ke musuh (dengan prediksi gerak).
 const TPR = {}; // waktu efek "ditekan" per tombol
 
@@ -15,6 +16,30 @@ const DASH_GAP = 300, // ms maks antar dua tap
 const DA = { on: 0, id: null, ox: 0, oy: 0, cx: 0, cy: 0, kx: 0, ky: 0, x: 1, y: 0, man: 0, mv: 0 }; // ox,oy = titik sentuh; cx,cy = pusat cincin (ditahan di dalam layar); kx,ky = offset knob; x,y = arah (vektor satuan); man = 1 jika knob keluar deadzone
 const LT = { t: 0, x: 0, y: 0 }; // tap singkat terakhir di sisi kiri (waktu, posisi)
 const LM = { x: 0, y: 0 }; // arah gerak terakhir pemain (vektor satuan) = arah dash bawaan jika stik tidak digeser
+
+// FLICK DASH: hentakan cepat jari pada stik gerak
+const FLICK_WIN = 110, // ms: jendela waktu untuk mengukur kecepatan geser
+  FLICK_DIST = 60, // px (x skala UI): jarak minimum geser dalam jendela itu
+  FLICK_SPD = 900, // px/detik: kecepatan minimum agar dihitung hentakan (geser biasa jauh lebih lambat)
+  FLICK_LOCK = 350; // ms: jeda antar flick dash
+const JH = []; // riwayat posisi jari stik gerak {t,x,y}
+let flickT = 0;
+function flickCheck(x, y) {
+  const now = performance.now();
+  JH.push({ t: now, x, y });
+  while (JH.length && now - JH[0].t > FLICK_WIN) JH.shift();
+  if (JH.length < 2 || now - flickT < FLICK_LOCK || S != 'play' || !P || P.dc > 0 || P.dash > 0) return;
+  const a = JH[0],
+    dx = x - a.x,
+    dy = y - a.y,
+    d = Math.hypot(dx, dy),
+    dt = Math.max(now - a.t, 16);
+  if (d >= FLICK_DIST * tui().u && (d / dt) * 1000 >= FLICK_SPD) {
+    flickT = now;
+    JH.length = 0;
+    dash(Math.atan2(dy, dx)); // arah = arah hentakan jari
+  }
+}
 
 const dashR = () => 64 * tui().u; // radius stik dash (px layar) = jangkauan tetap
 
@@ -237,6 +262,8 @@ addEventListener(
           JS.oy = y;
           JS.x = JS.y = 0;
           JS.t0 = now; // untuk mendeteksi tap singkat
+          JH.length = 0;
+          JH.push({ t: now, x, y });
         }
       }
     }
@@ -254,6 +281,7 @@ addEventListener(
       if (SK.on && t.identifier == SK.id) skAimFrom(tx_, ty_);
       if (DA.on && t.identifier == DA.id) dashAimFrom(tx_, ty_);
       if (JS.on && t.identifier == JS.id) {
+        flickCheck(tx_, ty_);
         const dx = tx_ - JS.ox,
           dy = ty_ - JS.oy,
           m = Math.hypot(dx, dy),
