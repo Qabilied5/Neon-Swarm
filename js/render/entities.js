@@ -38,6 +38,20 @@ function drawEnemies() {
       g.stroke();
       poly(e.x, e.y, e.r * 0.55, 8, -e.ph * 1.6);
       g.stroke();
+      if (e.sec) {
+        poly(e.x, e.y, e.r * 1.25, 4, e.ph * 0.8);
+        g.stroke();
+        poly(e.x, e.y, e.r * 0.3, 3, -e.ph * 2);
+        g.fill();
+        g.stroke();
+        if (e.ch > 0) {
+          g.globalAlpha = 0.5;
+          g.beginPath();
+          g.arc(e.x, e.y, e.r * (1.5 + 0.2 * Math.sin(t * 20)), 0, TAU);
+          g.stroke();
+          g.globalAlpha = 1;
+        }
+      }
       if (e.sup) {
         poly(e.x, e.y, e.r * 1.3, 8, -e.ph * 0.7);
         g.stroke();

@@ -1,6 +1,11 @@
 // Timer wave & spawn musuh
 function updWaves(dt) {
-  if (!(boss && boss.sup)) waveT += dt;
+  const solo = boss && (boss.sup || boss.sec); // boss solo: wave berhenti, tanpa musuh lain
+  if (!solo) waveT += dt;
+  if (nextBoss > 0 && (nextBoss -= dt) <= 0 && !boss) {
+    if (wave >= SUP) spawnSuper();
+    else spawnBoss();
+  }
   if (waveT >= 22) {
     waveT = 0;
     wave++;
@@ -14,13 +19,14 @@ function updWaves(dt) {
           ? 'MUSUH BERUBAH: lebih brutal & punya skill'
           : '',
     );
-    if (wave % 5 == 0) {
+    if (SEC_WAVES.includes(wave)) spawnSecret();
+    else if (wave % 5 == 0) {
       if (wave >= SUP) spawnSuper();
       else spawnBoss();
     }
   }
   spawnT -= dt;
-  if (spawnT < 0 && !(boss && boss.sup) && E.length < Math.min(9 + wave, 22)) {
+  if (spawnT < 0 && !solo && E.length < Math.min(9 + wave, 22)) {
     spawnT = Math.max(0.5, 1.4 - wave * 0.05);
     const n = 1 + ((wave / 9) | 0);
     for (let i = 0; i < n; i++) {

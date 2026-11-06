@@ -15,7 +15,8 @@ function updEnemies(dt) {
         e.cd = 2;
         EB.push({ x: e.x, y: e.y, vx: ux * 230, vy: uy * 230, r: 5, d: 10, life: 4 });
       }
-    } else if (e.k == 'boss' && e.sup) sup(e, dt, d, ux, uy);
+    } else if (e.k == 'boss' && e.sec) secretBoss(e, dt);
+    else if (e.k == 'boss' && e.sup) sup(e, dt, d, ux, uy);
     else if (e.k == 'boss') {
       e.ph += dt;
       if (d > 270) {
@@ -168,12 +169,17 @@ function updEnemies(dt) {
     }
     if (d < e.r + P.r) {
       hurt(e.dm, 1);
-      e.x -= ux * 6;
-      e.y -= uy * 6;
+      if (!e.sec) {
+        e.x -= ux * 6;
+        e.y -= uy * 6;
+      }
     }
     for (let j = 0; j < P.orb; j++) {
       const a = P.ot + (j * TAU) / P.orb;
-      if (Math.hypot(e.x - (P.x + Math.cos(a) * ORB_R), e.y - (P.y + Math.sin(a) * ORB_R)) < e.r + ORB_HIT) {
+      if (
+        Math.hypot(e.x - (P.x + Math.cos(a) * ORB_R), e.y - (P.y + Math.sin(a) * ORB_R)) <
+        e.r + ORB_HIT
+      ) {
         e.hp -= P.dmg * 6 * dt;
         e.fl = 0.05;
       }

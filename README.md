@@ -22,6 +22,7 @@ js/
   game/player.js                Aksi pemain: dash(), hurt(), die()
   enemies/spawn.js              spawn(), edge(), evolve() (evolusi tier), blast() (ledakan bomber)
   enemies/boss.js               spawnBoss() & spawnSuper() - kemunculan boss
+  enemies/secretboss.js           spawnSecret() - Secret Boss "Prism Sentinel" (wave 6, 11, 15, 20)
   enemies/superboss.js          AI & pola serangan Super Boss (sup())
   combat/damage.js              kill(), hit(), chain() petir, boom() ledakan peluru
   combat/skills.js              Skill aktif: nova() Q, laser() E, hole() R
@@ -32,6 +33,7 @@ js/
   update/projectiles.js         Peluru musuh & hazard (ring/beam) musuh
   update/pickups.js             Orb XP, level up, pilihan kartu
   update/fx.js                  Partikel, vortex black hole, timer efek, combo
+  update/secretboss.js            AI Secret Boss: pola laser layar penuh + pre-laser
   update/index.js               upd(dt) = urutan pembaruan per frame (memanggil file update/* lainnya)
   input/keyboard-mouse.js       Input keyboard & mouse
   input/touch.js                Input sentuh: stik analog & tombol skill mobile
@@ -65,6 +67,7 @@ js/
 | Upgrade baru         | `data/upgrades.js`                                                        |
 | Tipe musuh baru      | `data/enemies.js` (stat) + `update/enemies.js` (AI) + `enemies/spawn.js` / `update/waves.js` (kapan muncul) |
 | Skill baru           | `combat/skills.js` + tombol di `input/keyboard-mouse.js`, `input/touch.js`, `ui/skill-hud.js` |
+| Pola / kesulitan secret boss | `update/secretboss.js` (pola & timing), `enemies/secretboss.js` (HP), `data/config.js` (`SEC_WAVES`) |
 | Atur balance wave    | `data/config.js`, `update/waves.js`                                       |
 | Tampilan HUD         | `render/hud.js`                                                           |
 | Layar menu / game over | `render/screens.js`                                                     |

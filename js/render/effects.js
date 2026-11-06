@@ -1,4 +1,4 @@
-// Gambar hazard, ring, beam, petir, vortex, teks damage, partikel
+// Gambar hazard (+pre-laser), ring, beam, petir, vortex, teks damage, partikel
 function drawHazards() {
   for (const h of HZ) {
     const k = 1 - h.t / h.m;
@@ -14,6 +14,24 @@ function drawHazards() {
       g.beginPath();
       g.arc(h.x, h.y, h.r * k, 0, TAU);
       g.stroke();
+    } else if (h.k == 'laser') {
+      // pre-laser: band kuning = area yang akan terkena, kedip cepat sesaat sebelum menembak
+      const ux = Math.cos(h.a),
+        uy = Math.sin(h.a),
+        L = 2600,
+        blink = h.t < 0.25 && Math.floor(h.t * 40) % 2;
+      neon('#ffd166');
+      g.globalAlpha = 0.08 + 0.2 * k + (blink ? 0.3 : 0);
+      g.lineWidth = h.w + P.r;
+      g.beginPath();
+      g.moveTo(h.x - ux * L, h.y - uy * L);
+      g.lineTo(h.x + ux * L, h.y + uy * L);
+      g.stroke();
+      g.globalAlpha = 0.9;
+      g.lineWidth = 2;
+      g.setLineDash([14, 10]);
+      g.stroke();
+      g.setLineDash([]);
     } else {
       g.globalAlpha = 0.25 + 0.5 * k;
       g.lineWidth = 2 + h.w * 0.5 * k;
@@ -42,10 +60,10 @@ function drawBeams() {
     const k = b.l / b.m;
     neon('#ff2e63');
     g.globalAlpha = k;
-    g.lineWidth = 6 + 24 * k;
+    g.lineWidth = 6 + (b.w || 24) * k;
     g.beginPath();
-    g.moveTo(b.x, b.y);
-    g.lineTo(b.x + Math.cos(b.a) * 2200, b.y + Math.sin(b.a) * 2200);
+    g.moveTo(b.full ? b.x - Math.cos(b.a) * 2600 : b.x, b.full ? b.y - Math.sin(b.a) * 2600 : b.y);
+    g.lineTo(b.x + Math.cos(b.a) * 2600, b.y + Math.sin(b.a) * 2600);
     g.stroke();
     g.strokeStyle = '#fff';
     g.lineWidth = 2 + 4 * k;

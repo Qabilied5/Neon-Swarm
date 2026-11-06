@@ -1,4 +1,4 @@
-// Peluru musuh & hazard (ring/beam) musuh
+// Peluru musuh & hazard (ring/beam/laser) musuh
 function updEnemyBullets(dt) {
   for (let i = EB.length - 1; i >= 0; i--) {
     const b = EB[i];
@@ -22,6 +22,11 @@ function updHazards(dt) {
         pf(h.x, h.y, 14, '#ff9f1c', 260, 0.5);
         if (Math.hypot(P.x - h.x, P.y - h.y) < h.r + P.r * 0.5) hurt(h.d);
         shake = Math.max(shake, 6);
+      } else if (h.k == 'laser') {
+        BM.push({ x: h.x, y: h.y, a: h.a, l: 0.4, m: 0.4, full: 1, w: h.w });
+        const dist = Math.abs((P.x - h.x) * Math.sin(h.a) - (P.y - h.y) * Math.cos(h.a));
+        if (dist < h.w * 0.5 + P.r * 0.5) hurt(h.d);
+        shake = Math.max(shake, 8);
       } else {
         BM.push({ x: h.x, y: h.y, a: h.a, l: 0.35, m: 0.35 });
         const ux = Math.cos(h.a),

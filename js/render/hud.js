@@ -34,10 +34,19 @@ function drawHud() {
     tx('BEST ' + best, W - 16, 50, 12, '#7aa2c0', 'right');
     tx('WAVE ' + wave + '  ·  KILLS ' + kills, W / 2, 28, 14, '#22d3ee', 'center', 6);
     if (boss) {
-      const bw = boss.sup ? 460 : 320;
-      bar(W / 2 - bw / 2, 40, bw, boss.sup ? 12 : 8, boss.hp / boss.mh, '#ff2e63');
+      const big = boss.sup || boss.sec,
+        bw = big ? 460 : 320;
+      bar(
+        W / 2 - bw / 2,
+        40,
+        bw,
+        big ? 12 : 8,
+        boss.hp / boss.mh,
+        boss.sec ? '#ffd166' : '#ff2e63',
+      );
       if (boss.sup) tx('☠ ANNIHILATOR ☠', W / 2, 68, 12, '#ffd166', 'center', 8);
-      if (taunt) tx('"' + taunt + '"', W / 2, boss.sup ? 88 : 72, 14, '#ff8da1', 'center', 6);
+      if (boss.sec) tx('◈ PRISM SENTINEL ◈', W / 2, 68, 12, '#ffd166', 'center', 8);
+      if (taunt) tx('"' + taunt + '"', W / 2, big ? 88 : 72, 14, '#ff8da1', 'center', 6);
     }
     TOUCH ? touchHud() : skillHud();
     if (combo > 1) tx('COMBO x' + combo, W / 2, H - 74, 18, '#ffd166', 'center', 10);

@@ -1,4 +1,4 @@
-// Daftar kalimat ejekan boss & epitaf cadangan
+// Daftar kalimat ejekan boss, secret boss & epitaf cadangan
 const TAUNT = [
     'Kamu hanya debu digital.',
     'Sistem ini milikku.',
@@ -10,3 +10,9 @@ const TAUNT = [
     'Game over. Kernel panic.',
     'Terlalu banyak musuh, terlalu sedikit dash.',
   ];
+// Ejekan Secret Boss
+const SECT = [
+  'Temukan celahnya.',
+  'Cahaya tidak pernah meleset.',
+  'Berdirilah di antara garis-garis ini.',
+];

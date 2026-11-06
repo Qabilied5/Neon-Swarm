@@ -53,6 +53,7 @@ function init() {
   kills = 0;
   spawnT = 1;
   boss = null;
+  nextBoss = 0;
   taunt = '';
   epi = '';
   S = 'play';

@@ -28,6 +28,7 @@ let S = 'menu',
   kills = 0,
   spawnT = 0,
   boss = null,
+  nextBoss = 0, // timer: boss biasa muncul setelah secret boss kalah (wave 15 & 20)
   cards = [],
   shake = 0,
   msg = '',

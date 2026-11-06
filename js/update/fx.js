@@ -17,7 +17,7 @@ function updVortex(dt) {
         dy = v.y - e.y,
         d = Math.hypot(dx, dy) || 1;
       if (d < v.r) {
-        const f = e.sup ? 0 : e.k == 'boss' ? 0.25 : 1;
+        const f = e.sup || e.sec ? 0 : e.k == 'boss' ? 0.25 : 1;
         e.x += (dx / d) * 170 * f * dt;
         e.y += (dy / d) * 170 * f * dt;
         e.hp -= (25 + P.dmg * 2.5) * dt;
