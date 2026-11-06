@@ -124,8 +124,9 @@ function drawSkillAim() {
 function drawReticle(u) {
   const rx = P.x + AIM.ox,
     ry = P.y + AIM.oy,
-    r = 20 * u,
-    c = '#ff2e63';
+    r = reticleR(), // = radius area aim assist
+    tg = AIM.tg,
+    c = tg ? '#39ff88' : '#ff2e63'; // hijau = musuh terkunci
   g.strokeStyle = c;
   g.shadowColor = c;
   g.shadowBlur = 8;
@@ -160,6 +161,21 @@ function drawReticle(u) {
   g.beginPath();
   g.arc(rx, ry, 2.5 * u, 0, TAU);
   g.fill();
+  if (tg) {
+    // penanda kunci di musuh: 4 sudut braket + garis tipis dari pemain
+    const e = tg.e,
+      s = e.r + 7 * u,
+      q = s * 0.45;
+    g.globalAlpha = 0.9;
+    g.lineWidth = 3;
+    g.beginPath();
+    for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+      g.moveTo(e.x + sx * s, e.y + sy * (s - q));
+      g.lineTo(e.x + sx * s, e.y + sy * s);
+      g.lineTo(e.x + sx * (s - q), e.y + sy * s);
+    }
+    g.stroke();
+  }
   g.shadowBlur = 0;
   g.globalAlpha = 1;
 }

@@ -6,6 +6,11 @@ function updPlayer(dt) {
     dx = JS.x;
     dy = JS.y;
   }
+  if (dx || dy) {
+    const m_ = Math.hypot(dx, dy);
+    LM.x = dx / m_; // ingat arah gerak terakhir (arah dash bawaan)
+    LM.y = dy / m_;
+  }
   const l = JS.on ? 1 : Math.hypot(dx, dy) || 1;
   if (TOUCH) {
     // TANPA auto aim: arah = arah dari pemain ke lingkaran bidik (aktif saat tombol serang ditahan)
@@ -14,7 +19,12 @@ function updPlayer(dt) {
       P.a = Math.atan2(AIM.y, AIM.x);
       M.x = P.x + AIM.ox;
       M.y = P.y + AIM.oy;
+      // AIM ASSIST: musuh di dalam lingkaran bidik -> tembakan terkunci tepat ke musuh itu
+      AIM.tg = aimAssist(dt);
+      if (AIM.tg) P.a = AIM.tg.a;
     } else {
+      AIM.tg = null;
+      for (const e of E) e.ax = null; // reset pelacakan kecepatan musuh untuk aim assist
       M.x = P.x + Math.cos(P.a) * 220;
       M.y = P.y + Math.sin(P.a) * 220;
     }
@@ -45,8 +55,8 @@ function updPlayer(dt) {
       B.push({
         x: P.x + Math.cos(a) * 14,
         y: P.y + Math.sin(a) * 14,
-        vx: Math.cos(a) * 640,
-        vy: Math.sin(a) * 640,
+        vx: Math.cos(a) * BUL_SPD,
+        vy: Math.sin(a) * BUL_SPD,
         r: 4,
         d: P.dmg,
         p: P.pier,

@@ -36,6 +36,9 @@ function buildTUI() {
     })),
   };
 }
+// tombol yang tampil & bisa disentuh: skill Q/E/R yang masih terkunci (belum dipilih di level-up) disembunyikan
+const vbtns = () => tui().btns.filter((b) => !(b.k == 'q' || b.k == 'e' || b.k == 'r') || (P && P.sk[b.k] > 0));
+
 // hasil di-cache, dihitung ulang hanya saat ukuran layar / safe-area berubah
 function tui() {
   if (!TUI || TUI.w != UW || TUI.h != UH || TUI.sl != SAFE.l || TUI.sr != SAFE.r || TUI.sb != SAFE.b)

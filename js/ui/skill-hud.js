@@ -1,12 +1,14 @@
 // Gambar ikon skill Q/E/R + heal C di desktop
 function skillHud() {
-  [
+  // hanya skill yang sudah terbuka (+ heal C); yang masih terkunci tidak ditampilkan
+  const list = [
     ['q', 'Q', '#22d3ee'],
     ['e', 'E', '#ff2e63'],
     ['r', 'R', '#b967ff'],
     ['c', 'C', '#39ff88'],
-  ].forEach((k, i) => {
-    const x = UW / 2 - 108 + i * 56,
+  ].filter((k) => k[0] == 'c' || P.sk[k[0]] > 0);
+  list.forEach((k, i) => {
+    const x = UW / 2 - (list.length * 56 - 8) / 2 + i * 56,
       y = UH - 62,
       isC = k[0] == 'c',
       lv = isC ? 1 : P.sk[k[0]],

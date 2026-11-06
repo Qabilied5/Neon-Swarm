@@ -1,4 +1,5 @@
 // Konstanta balance: tier(wave), LET (zona maut), SUP (super boss), heal, orbital blade, wave secret boss
+const BUL_SPD = 640; // kecepatan peluru pemain (dipakai tembakan & aim assist)
 const tier = (w) => (w >= 11 ? 3 : w >= 6 ? 2 : 1),
   LET = 8,
   SUP = 15,

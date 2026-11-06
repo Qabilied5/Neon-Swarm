@@ -1,29 +1,40 @@
 // Input sentuh: sisi kiri layar = stik gerak (melayang, tanpa UI), sisi kanan layar = serang bebas (tahan + geser untuk bidik, TANPA auto aim)
 // + dash & skill. Skill Q/E/R: tahan -> geser untuk membidik -> lepas untuk menembakkan.
-// DASH ANALOG: double-tap di sisi kiri layar (tanpa UI), tap kedua ditahan lalu geser ke arah mana saja (360°, presisi), lepas = dash.
+// DASH ANALOG: double-tap di sisi kiri layar, tap kedua ditahan -> muncul stik analog dengan jangkauan TETAP; geser ke arah mana saja (360°), lepas = dash.
+// AIM ASSIST: musuh di dalam lingkaran bidik -> peluru diarahkan tepat ke musuh (dengan prediksi gerak).
 const TPR = {}; // waktu efek "ditekan" per tombol
 
 // DASH ANALOG (double-tap sisi kiri): tap 1 singkat -> tap 2 ditahan + geser = arahkan dash -> lepas = dash.
 // Sisi kiri tetap tanpa UI; pratinjau arah hanya digambar di dunia game (render/aim.js) selama ditahan.
 const DASH_GAP = 300, // ms maks antar dua tap
   DASH_DIST = 90, // px maks jarak antar dua tap
-  DASH_DEAD = 10, // px: geser kurang dari ini = arah bawaan (arah hadap pemain)
+  DASH_DEAD = 0.18, // deadzone stik dash (pecahan radius): di bawah ini = arah bawaan (arah gerak terakhir)
+  DASH_MOVE = 6, // px: jari harus bergeser sejauh ini dari titik sentuh sebelum dianggap membidik
   DASH_TAP_MS = 220, // tap pertama harus lebih singkat dari ini
   DASH_TAP_MOVE = 20; // ...dan tidak bergeser lebih dari ini (px)
-const DA = { on: 0, id: null, ox: 0, oy: 0, x: 1, y: 0, man: 0 }; // ox,oy = titik sentuh awal; x,y = arah (vektor satuan); man = 1 jika digeser keluar deadzone
+const DA = { on: 0, id: null, ox: 0, oy: 0, cx: 0, cy: 0, kx: 0, ky: 0, x: 1, y: 0, man: 0, mv: 0 }; // ox,oy = titik sentuh; cx,cy = pusat cincin (ditahan di dalam layar); kx,ky = offset knob; x,y = arah (vektor satuan); man = 1 jika knob keluar deadzone
 const LT = { t: 0, x: 0, y: 0 }; // tap singkat terakhir di sisi kiri (waktu, posisi)
+const LM = { x: 0, y: 0 }; // arah gerak terakhir pemain (vektor satuan) = arah dash bawaan jika stik tidak digeser
+
+const dashR = () => 64 * tui().u; // radius stik dash (px layar) = jangkauan tetap
 
 function dashAimFrom(x, y) {
-  const dx = x - DA.ox,
-    dy = y - DA.oy,
-    m = Math.hypot(dx, dy);
-  DA.man = m >= DASH_DEAD ? 1 : 0;
+  const R = dashR();
+  if (Math.hypot(x - DA.ox, y - DA.oy) >= DASH_MOVE) DA.mv = 1; // cincin yang digeser agar muat di layar tidak dihitung sebagai geseran jari
+  const dx = x - DA.cx,
+    dy = y - DA.cy,
+    m = Math.hypot(dx, dy) || 1,
+    k = Math.min(m, R) / m;
+  DA.kx = dx * k;
+  DA.ky = dy * k;
+  DA.man = DA.mv && m >= R * DASH_DEAD ? 1 : 0;
   if (DA.man) {
-    DA.x = dx / m; // analog penuh: sudut mengikuti jari tanpa dibulatkan ke 8 arah
+    DA.x = dx / m; // analog penuh: sudut mengikuti jari tanpa dibulatkan
     DA.y = dy / m;
-  }
+  } else DA.kx = DA.ky = 0;
 }
-const dashAimAngle = () => (DA.man ? Math.atan2(DA.y, DA.x) : P.a);
+// sudut dash: arah knob; jika tidak digeser -> arah gerak terakhir, lalu arah hadap
+const dashAimAngle = () => (DA.man ? Math.atan2(DA.y, DA.x) : LM.x || LM.y ? Math.atan2(LM.y, LM.x) : P.a);
 
 // jarak bidik maksimum (satuan dunia) untuk skill yang menargetkan titik
 const SK_RANGE = { q: 230, r: 380 };
@@ -68,6 +79,49 @@ function aimSync() {
     AIM.y = AIM.oy / d;
     AIM.dist = d;
   }
+}
+
+// AIM ASSIST: radius lingkaran bidik (satuan dunia) - harus sama dengan yang digambar render/aim.js
+const reticleR = () => 20 * tui().u * ZK;
+const LEAD_MAX = 0.6; // detik: batas prediksi gerak musuh
+// Cari musuh di dalam lingkaran bidik (terdekat ke pusat lingkaran) dan hitung sudut tembak tepat ke musuh itu.
+// Dipanggil tiap frame selama tombol serang ditahan. Mengembalikan { e, a } atau null.
+function aimAssist(dt) {
+  const rx = P.x + AIM.ox,
+    ry = P.y + AIM.oy,
+    rr = reticleR();
+  let best = null,
+    bd = 1e9;
+  for (const e of E) {
+    // kecepatan musuh dari selisih posisi antar frame (dihaluskan; lonjakan = teleport/dash singkat diabaikan)
+    if (e.ax != null && dt > 0) {
+      let vx = (e.x - e.ax) / dt,
+        vy = (e.y - e.ay) / dt;
+      if (Math.hypot(vx, vy) > 900) vx = vy = 0;
+      e.avx = (e.avx || 0) * 0.5 + vx * 0.5;
+      e.avy = (e.avy || 0) * 0.5 + vy * 0.5;
+    }
+    e.ax = e.x;
+    e.ay = e.y;
+    if (e.hp <= 0) continue;
+    const d = Math.hypot(e.x - rx, e.y - ry); // musuh dianggap "di dalam" jika tubuhnya menyentuh lingkaran
+    if (d < rr + e.r && d < bd) {
+      bd = d;
+      best = e;
+    }
+  }
+  if (!best) return null;
+  // prediksi titik temu peluru (kecepatan 640): iterasi kecil
+  const vx = best.avx || 0,
+    vy = best.avy || 0;
+  let tx_ = best.x,
+    ty_ = best.y;
+  for (let i = 0; i < 3; i++) {
+    const tt = Math.min(Math.hypot(tx_ - P.x, ty_ - P.y) / BUL_SPD, LEAD_MAX);
+    tx_ = best.x + vx * tt;
+    ty_ = best.y + vy * tt;
+  }
+  return { e: best, a: Math.atan2(ty_ - P.y, tx_ - P.x) };
 }
 
 // set arah/jarak bidik skill dari posisi jari relatif pusat tombol skill
@@ -136,7 +190,7 @@ addEventListener(
         continue;
       }
       const U = tui(),
-        b = U.btns.find((b) => Math.hypot(b.x - x, b.y - y) < b.r + 10);
+        b = vbtns().find((b) => Math.hypot(b.x - x, b.y - y) < b.r + 10); // skill terkunci tidak ditampilkan & tidak bisa disentuh
       if (b) {
         if (SK_AIMABLE[b.k] && !SK.on) {
           // skill berbidik: ditembakkan saat dilepas
@@ -169,7 +223,12 @@ addEventListener(
           DA.id = t.identifier;
           DA.ox = x;
           DA.oy = y;
-          DA.man = 0;
+          const R = dashR(),
+            sf = 8;
+          DA.cx = cl(x, SAFE.l + R + sf, Math.max(SAFE.l + R + sf, UW * 0.5)); // cincin tetap utuh di dalam layar
+          DA.cy = cl(y, R + sf, UH - SAFE.b - R - sf);
+          DA.man = DA.mv = 0;
+          DA.kx = DA.ky = 0;
           DA.x = DA.y = 0;
         } else {
           JS.on = 1;
@@ -227,12 +286,14 @@ const tend = (e) => {
       JS.x = JS.y = 0;
     }
     if (DA.on && t.identifier == DA.id) {
-      if (e.type == 'touchend' && S == 'play' && P) dash(DA.man ? Math.atan2(DA.y, DA.x) : null); // touchcancel = batal
-      DA.on = DA.man = 0;
+      if (e.type == 'touchend' && S == 'play' && P) dash(dashAimAngle()); // touchcancel = batal
+      DA.on = DA.man = DA.mv = 0;
+      DA.kx = DA.ky = 0;
     }
     if (AIM.on && t.identifier == AIM.id) {
       AIM.on = AIM.man = 0;
       AIM.kx = AIM.ky = 0;
+      AIM.tg = null;
     }
     if (SK.on && t.identifier == SK.id) {
       const k = SK.k;
