@@ -24,12 +24,12 @@ addEventListener('keydown', (e) => {
 });
 addEventListener('keyup', (e) => (K[e.code] = 0));
 addEventListener('mousemove', (e) => {
-  M.x = e.clientX;
-  M.y = e.clientY;
+  M.x = e.clientX / ZM;
+  M.y = e.clientY / ZM;
 });
 addEventListener('mousedown', (e) => {
-  M.x = e.clientX;
-  M.y = e.clientY;
+  M.x = e.clientX / ZM;
+  M.y = e.clientY / ZM;
   const u = uiHit(M.x, M.y);
   if (u) {
     uiAct(u);

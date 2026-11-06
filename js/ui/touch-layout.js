@@ -1,5 +1,5 @@
 // Layout kontrol sentuh (landscape): stik kiri, tombol serang kanan dikelilingi dash & skill
-const bs = () => cl(H / 400, 0.75, 1.2); // skala UI menurut tinggi layar
+const bs = () => cl(innerHeight / 400, 0.75, 1.2) / ZM; // dibagi ZM agar ukuran fisik tombol tetap nyaman saat zoom-out // skala UI menurut tinggi layar
 
 // Tombol di sekeliling tombol serang. a = sudut (derajat, 180 = kiri tombol serang, searah jarum jam)
 // Tambah tombol baru di sini (+ f = fungsi aksi). Maks ~6 tombol agar tidak berdesakan.

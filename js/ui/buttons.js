@@ -1,14 +1,15 @@
 // Tombol UI kecil (fullscreen, pause) + hit test
 function uiBtns() {
   if (S == 'dead') return [];
-  const b = [];
-  let x = W - SAFE.r - 26;
+  const b = [],
+    k = 1 / ZM; // ukuran fisik tombol tetap saat zoom-out
+  let x = W - SAFE.r - 26 * k;
   if (!STANDALONE) {
     // sudah fullscreen saat dipasang sebagai PWA
-    b.push({ k: 'fs', x, y: 84, r: 20 });
-    x -= 48;
+    b.push({ k: 'fs', x, y: 84 * k, r: 20 * k });
+    x -= 48 * k;
   }
-  if (TOUCH && (S == 'play' || S == 'pause')) b.push({ k: 'pause', x, y: 84, r: 20 });
+  if (TOUCH && (S == 'play' || S == 'pause')) b.push({ k: 'pause', x, y: 84 * k, r: 20 * k });
   return b;
 }
 const uiHit = (x, y) => {
@@ -21,6 +22,7 @@ function uiAct(u) {
   else if (S == 'pause') S = 'play';
 }
 function uiDraw() {
+  const k = 1 / ZM;
   for (const b of uiBtns()) {
     g.globalAlpha = 0.75;
     g.shadowBlur = 0;
@@ -35,15 +37,15 @@ function uiDraw() {
     if (b.k == 'fs') {
       for (const sx of [-1, 1])
         for (const sy of [-1, 1]) {
-          g.moveTo(b.x + sx * 8, b.y + sy * 3);
-          g.lineTo(b.x + sx * 8, b.y + sy * 8);
-          g.lineTo(b.x + sx * 3, b.y + sy * 8);
+          g.moveTo(b.x + sx * 8 * k, b.y + sy * 3 * k);
+          g.lineTo(b.x + sx * 8 * k, b.y + sy * 8 * k);
+          g.lineTo(b.x + sx * 3 * k, b.y + sy * 8 * k);
         }
       g.stroke();
     } else {
       g.fillStyle = '#22d3ee';
-      g.fillRect(b.x - 6, b.y - 7, 4, 14);
-      g.fillRect(b.x + 2, b.y - 7, 4, 14);
+      g.fillRect(b.x - 6 * k, b.y - 7 * k, 4 * k, 14 * k);
+      g.fillRect(b.x + 2 * k, b.y - 7 * k, 4 * k, 14 * k);
     }
   }
   g.globalAlpha = 1;

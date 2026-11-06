@@ -90,6 +90,20 @@ function drawTBtn(b) {
     g.arc(b.x, b.y, r, -Math.PI / 2, -Math.PI / 2 + TAU * cl(cd / mx, 0, 1));
     g.fill();
   }
+  if (SK.on && SK.k == b.k) {
+    // knob bidik skill mengikuti jari + cincin jangkauan geser
+    g.strokeStyle = b.c;
+    g.fillStyle = b.c;
+    g.globalAlpha = 0.35;
+    g.lineWidth = 2;
+    g.beginPath();
+    g.arc(b.x, b.y, tui().atk.aimR, 0, TAU);
+    g.stroke();
+    g.globalAlpha = 0.85;
+    g.beginPath();
+    g.arc(b.x + SK.kx, b.y + SK.ky, b.r * 0.45, 0, TAU);
+    g.fill();
+  }
   g.globalAlpha = 1;
   const big = b.k == 'dash' ? 13 : 20;
   if (b.k == 'c' && cd > 0)

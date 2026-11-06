@@ -1,4 +1,4 @@
-// Gerak, bidik (mouse / tombol serang sentuh / auto), dash, tembak otomatis pemain
+// Gerak, bidik (mouse / tombol serang sentuh), dash, tembak pemain (sentuh: hanya saat tombol serang ditahan)
 function updPlayer(dt) {
   let dx = (K.KeyD || K.ArrowRight ? 1 : 0) - (K.KeyA || K.ArrowLeft ? 1 : 0),
     dy = (K.KeyS || K.ArrowDown ? 1 : 0) - (K.KeyW || K.ArrowUp ? 1 : 0);
@@ -8,20 +8,8 @@ function updPlayer(dt) {
   }
   const l = JS.on ? 1 : Math.hypot(dx, dy) || 1;
   if (TOUCH) {
-    let bd = 1e9,
-      nn = null;
-    for (const e of E) {
-      const q = Math.hypot(e.x - P.x, e.y - P.y);
-      if (q < bd) {
-        bd = q;
-        nn = e;
-      }
-    }
-    if (AIM.on && AIM.man)
-      P.a = Math.atan2(AIM.y, AIM.x); // bidik manual: geser tombol serang
-    else if (nn)
-      P.a = Math.atan2(nn.y - P.y, nn.x - P.x); // dilepas / di tengah = bidik otomatis
-    else if (JS.on && (JS.x || JS.y)) P.a = Math.atan2(JS.y, JS.x);
+    // TANPA auto aim: arah hanya berubah saat tombol serang digeser keluar deadzone
+    if (AIM.on && AIM.man) P.a = Math.atan2(AIM.y, AIM.x);
     M.x = P.x + Math.cos(P.a) * 220;
     M.y = P.y + Math.sin(P.a) * 220;
   } else P.a = Math.atan2(M.y - P.y, M.x - P.x);
@@ -42,7 +30,9 @@ function updPlayer(dt) {
   if (!P.dash && (dx || dy) && Math.random() < 0.6)
     PT.push({ x: P.x, y: P.y, vx: 0, vy: 0, l: 0.35, m: 0.35, c: '#22d3ee', s: 5 });
   P.fire -= dt;
-  while (P.fire <= 0) {
+  const canFire = !TOUCH || AIM.on; // sentuh: tembak hanya saat tombol serang ditahan
+  if (!canFire && P.fire < 0) P.fire = 0;
+  while (canFire && P.fire <= 0) {
     P.fire += 1 / P.rate;
     for (let i = 0; i < P.multi; i++) {
       const a = P.a + (i - (P.multi - 1) / 2) * 0.14;
