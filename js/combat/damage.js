@@ -32,7 +32,7 @@ function kill(e, i) {
 }
 function hit(e, d) {
   const c = Math.random() < P.crit;
-  if (c) d *= 2.5;
+  if (c) d *= 3.5;
   e.hp -= d;
   e.fl = 0.08;
   if (FT.length < 80)

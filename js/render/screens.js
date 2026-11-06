@@ -12,7 +12,7 @@ function drawMenu() {
       '#39ff88',
     );
     tx(
-      'Q NOVA  ·  E LASER  ·  R BLACK HOLE  (skill dibuka lewat upgrade level-up)',
+      'C HEAL +30% HP (cooldown 60 dtk)  ·  Q NOVA  ·  E LASER  ·  R BLACK HOLE  (Q/E/R dibuka lewat upgrade)',
       W / 2,
       H * 0.56 + 50,
       13,

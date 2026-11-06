@@ -173,7 +173,7 @@ function updEnemies(dt) {
     }
     for (let j = 0; j < P.orb; j++) {
       const a = P.ot + (j * TAU) / P.orb;
-      if (Math.hypot(e.x - (P.x + Math.cos(a) * 54), e.y - (P.y + Math.sin(a) * 54)) < e.r + 9) {
+      if (Math.hypot(e.x - (P.x + Math.cos(a) * ORB_R), e.y - (P.y + Math.sin(a) * ORB_R)) < e.r + ORB_HIT) {
         e.hp -= P.dmg * 6 * dt;
         e.fl = 0.05;
       }

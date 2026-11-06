@@ -26,7 +26,7 @@ function init() {
     need: 6,
     a: 0,
     sk: { q: 0, e: 0, r: 0 },
-    cd: { q: 0, e: 0, r: 0 },
+    cd: { q: 0, e: 0, r: 0, c: 0 },
     ch: 0,
     boom: 0,
     vamp: 0,

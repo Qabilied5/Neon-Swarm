@@ -19,6 +19,7 @@ addEventListener('keydown', (e) => {
     if (c == 'KeyQ') nova();
     if (c == 'KeyE') laser();
     if (c == 'KeyR') hole();
+    if (c == 'KeyC') heal();
   }
 });
 addEventListener('keyup', (e) => (K[e.code] = 0));

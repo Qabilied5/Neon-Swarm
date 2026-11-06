@@ -50,3 +50,16 @@ function hole() {
   VX.push({ x: M.x, y: M.y, l: 3.5, m: 3.5, r: 170 + P.sk.r * 25 });
   snd(80, 0.6, 'sine', 0.09);
 }
+
+// Heal (C): pulihkan HEAL_PCT dari max HP, cooldown HEAL_CD detik
+function heal() {
+  if (P.cd.c > 0) return;
+  P.cd.c = HEAL_CD;
+  const amt = Math.round(P.mh * HEAL_PCT);
+  P.hp = Math.min(P.mh, P.hp + amt);
+  RG.push({ x: P.x, y: P.y, r: 0, mr: 90, c: '#39ff88', w: 6, l: 0.5, m: 0.5 });
+  pf(P.x, P.y, 30, '#39ff88', 260, 0.7);
+  FT.push({ x: P.x, y: P.y - P.r - 10, t: 1, s: '+' + amt + ' HP', c: '#39ff88', z: 18 });
+  snd(520, 0.3, 'triangle', 0.07);
+  snd(780, 0.3, 'sine', 0.05);
+}

@@ -93,7 +93,7 @@ function drawOrbitals() {
     const a = P.ot + (j * TAU) / P.orb;
     neon('#ffd166', '#ffd166');
     g.beginPath();
-    g.arc(P.x + Math.cos(a) * 54, P.y + Math.sin(a) * 54, 8, 0, TAU);
+    g.arc(P.x + Math.cos(a) * ORB_R, P.y + Math.sin(a) * ORB_R, ORB_SIZE, 0, TAU);
     g.fill();
   }
 }

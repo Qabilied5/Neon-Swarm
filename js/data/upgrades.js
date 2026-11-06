@@ -23,5 +23,5 @@ const UP = [
   ['CHAIN LIGHTNING', 'peluru memicu petir ke musuh terdekat', () => P.ch++],
   ['EXPLOSIVE ROUNDS', 'peluru meledak area kecil', () => P.boom++],
   ['VAMPIRISM', 'setiap kill memulihkan HP', () => P.vamp++],
-  ['CRITICAL', '+10% peluang crit (damage x2.5)', () => (P.crit += 0.1)],
+  ['CRITICAL', '+20% peluang crit (damage x3.5)', () => (P.crit += 0.2)],
 ];
