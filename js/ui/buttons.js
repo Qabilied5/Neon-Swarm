@@ -2,8 +2,8 @@
 function uiBtns() {
   if (S == 'dead') return [];
   const b = [],
-    k = 1 / ZM; // ukuran fisik tombol tetap saat zoom-out
-  let x = W - SAFE.r - 26 * k;
+    k = 1; // UI sudah di ruang layar: ukuran tombol tidak ikut zoom
+  let x = UW - SAFE.r - 26 * k;
   if (!STANDALONE) {
     // sudah fullscreen saat dipasang sebagai PWA
     b.push({ k: 'fs', x, y: 84 * k, r: 20 * k });
@@ -22,7 +22,7 @@ function uiAct(u) {
   else if (S == 'pause') S = 'play';
 }
 function uiDraw() {
-  const k = 1 / ZM;
+  const k = 1;
   for (const b of uiBtns()) {
     g.globalAlpha = 0.75;
     g.shadowBlur = 0;

@@ -26,8 +26,8 @@ function aimStart(x, y) {
 
 // geser jari -> geser lingkaran (tanpa batas jangkauan, hanya dibatasi tepi layar)
 function aimFrom(x, y) {
-  AIM.ox += (x - AIM.lx) * AIM_GAIN;
-  AIM.oy += (y - AIM.ly) * AIM_GAIN;
+  AIM.ox += ((x - AIM.lx) * AIM_GAIN) / ZM; // jari bergerak px layar -> /ZM ke satuan dunia (rasa geser tetap sama di zoom berapa pun)
+  AIM.oy += ((y - AIM.ly) * AIM_GAIN) / ZM;
   AIM.lx = x;
   AIM.ly = y;
   aimSync();
@@ -96,8 +96,8 @@ addEventListener(
     TOUCH = true;
     if (PORTRAIT) return;
     for (const t of e.changedTouches) {
-      const x = t.clientX / ZM,
-        y = t.clientY / ZM; // konversi ke koordinat dunia logis
+      const x = t.clientX,
+        y = t.clientY; // koordinat layar asli (ruang UI)
       if (uiHit(x, y)) continue;
       if (S == 'menu' || S == 'dead') {
         if (deadT <= 0) init();
@@ -130,14 +130,14 @@ addEventListener(
         }
         continue;
       }
-      if (!AIM.on && x >= W * 0.5) {
+      if (!AIM.on && x >= UW * 0.5) {
         // seluruh sisi kanan layar = area serang bebas (tahan + geser)
         AIM.on = 1;
         AIM.id = t.identifier;
         aimStart(x, y);
         continue;
       }
-      if (x < W * 0.5 && !JS.on) {
+      if (x < UW * 0.5 && !JS.on) {
         JS.on = 1;
         JS.id = t.identifier;
         JS.ox = x;
@@ -153,8 +153,8 @@ addEventListener(
   (e) => {
     e.preventDefault();
     for (const t of e.changedTouches) {
-      const tx_ = t.clientX / ZM,
-        ty_ = t.clientY / ZM;
+      const tx_ = t.clientX,
+        ty_ = t.clientY;
       if (AIM.on && t.identifier == AIM.id) aimFrom(tx_, ty_);
       if (SK.on && t.identifier == SK.id) skAimFrom(tx_, ty_);
       if (JS.on && t.identifier == JS.id) {
@@ -191,7 +191,7 @@ const tend = (e) => {
       SK.kx = SK.ky = 0;
     }
     if (e.type == 'touchend') {
-      const u = uiHit(t.clientX / ZM, t.clientY / ZM);
+      const u = uiHit(t.clientX, t.clientY);
       if (u) uiAct(u);
       else if (!fsTried && !STANDALONE && S == 'play') {
         fsTried = 1;

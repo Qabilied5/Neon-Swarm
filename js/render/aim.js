@@ -3,7 +3,7 @@
 //  - skill Q/E/R: pratinjau area/arah saat tombol skill ditahan & digeser
 function drawAim() {
   if (!TOUCH || !P || S != 'play') return;
-  const u = tui().u * ZM, // ukuran fisik konstan walau zoom-out
+  const u = tui().u * ZK, // ukuran di layar dijaga sama (dunia di-zoom-out -> satuan dunia diperbesar)
     on = AIM.on,
     ux = Math.cos(P.a),
     uy = Math.sin(P.a),

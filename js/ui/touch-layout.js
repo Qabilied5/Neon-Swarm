@@ -1,5 +1,5 @@
 // Layout kontrol sentuh (landscape): stik kiri, tombol serang kanan dikelilingi dash & skill
-const bs = () => cl(innerHeight / 400, 0.75, 1.2) / ZM; // dibagi ZM agar ukuran fisik tombol tetap nyaman saat zoom-out // skala UI menurut tinggi layar
+const bs = () => cl(innerHeight / 400, 0.75, 1.2); // skala UI menurut tinggi layar (UI di ruang layar, tidak ikut zoom dunia)
 
 // Tombol di sekeliling tombol serang. a = sudut (derajat, 180 = kiri tombol serang, searah jarum jam)
 // Tambah tombol baru di sini (+ f = fungsi aksi). Maks ~6 tombol agar tidak berdesakan.
@@ -16,17 +16,17 @@ function buildTUI() {
   const u = bs(),
     R = 96 * u, // jarak tombol skill dari pusat tombol serang
     ar = 46 * u, // radius tombol serang
-    cx = W - SAFE.r - 12 - R * 0.98 - 30 * u,
-    cy = H - SAFE.b - 10 - ar,
+    cx = UW - SAFE.r - 12 - R * 0.98 - 30 * u,
+    cy = UH - SAFE.b - 10 - ar,
     sr = 55 * u; // radius stik kiri
   return {
-    w: W,
-    h: H,
+    w: UW,
+    h: UH,
     sl: SAFE.l,
     sr: SAFE.r,
     sb: SAFE.b,
     u,
-    stick: { x: Math.max(SAFE.l + 30 + sr, W * 0.13), y: H - SAFE.b - 20 - sr, r: sr },
+    stick: { x: Math.max(SAFE.l + 30 + sr, UW * 0.13), y: UH - SAFE.b - 20 - sr, r: sr },
     atk: { x: cx, y: cy, r: ar, aimR: 60 * u, dead: 10 * u },
     btns: TBTN.map((b) => ({
       ...b,
@@ -38,7 +38,7 @@ function buildTUI() {
 }
 // hasil di-cache, dihitung ulang hanya saat ukuran layar / safe-area berubah
 function tui() {
-  if (!TUI || TUI.w != W || TUI.h != H || TUI.sl != SAFE.l || TUI.sr != SAFE.r || TUI.sb != SAFE.b)
+  if (!TUI || TUI.w != UW || TUI.h != UH || TUI.sl != SAFE.l || TUI.sr != SAFE.r || TUI.sb != SAFE.b)
     TUI = buildTUI();
   return TUI;
 }

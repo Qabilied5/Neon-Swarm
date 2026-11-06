@@ -144,7 +144,7 @@ function drawVortex() {
 function drawFloatTexts() {
   for (const f of FT) {
     g.globalAlpha = cl(f.t * 2, 0, 1);
-    tx(f.s, f.x, f.y, f.z, f.c, 'center', 6);
+    tx(f.s, f.x, f.y, f.z * ZK, f.c, 'center', 6); // ukuran angka tetap terbaca saat zoom-out
   }
   g.globalAlpha = 1;
 }

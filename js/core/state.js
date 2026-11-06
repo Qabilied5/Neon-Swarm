@@ -1,6 +1,7 @@
 // Semua variabel state global game (P, E, B, wave, score, S=state layar, dll)
 const K = {},
-  M = { x: 0, y: 0 };
+  M = { x: 0, y: 0 }, // posisi mouse di koordinat DUNIA (untuk bidik)
+  MU = { x: 0, y: 0 }; // posisi mouse di koordinat LAYAR (untuk UI: hover kartu, tombol)
 let TOUCH = matchMedia('(pointer:coarse)').matches,
   fsTried = 0;
 const JS = { on: 0, id: null, ox: 0, oy: 0, x: 0, y: 0 }; // stik kiri (gerak)

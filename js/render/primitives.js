@@ -14,7 +14,7 @@ const neon = (c, f) => {
   g.shadowBlur = TOUCH ? 6 : 14; // glow lebih ringan di HP
   g.strokeStyle = c;
   g.fillStyle = f || c + '22';
-  g.lineWidth = 2;
+  g.lineWidth = 2 * ZK; // tidak menipis saat zoom-out
 };
 function tx(s, x, y, sz, c, al = 'center', gl = 0) {
   g.font = `700 ${sz}px Consolas,Menlo,monospace`;

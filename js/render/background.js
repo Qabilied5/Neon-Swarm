@@ -4,9 +4,9 @@ function drawBackground() {
   g.fillStyle = '#04060d';
   g.fillRect(0, 0, W, H);
   const pu = 0.5 + 0.5 * Math.sin(T * 2),
-    gs = 48;
+    gs = 48 * ZK; // jarak grid di layar tetap sama walau zoom-out
   g.strokeStyle = `rgba(34,211,238,${0.05 + 0.035 * pu})`;
-  g.lineWidth = 1;
+  g.lineWidth = ZK;
   g.beginPath();
   const ox = P ? (-P.x * 0.04) % gs : 0,
     oy = P ? (-P.y * 0.04) % gs : 0;

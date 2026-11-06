@@ -26,18 +26,22 @@ addEventListener('keyup', (e) => (K[e.code] = 0));
 addEventListener('mousemove', (e) => {
   M.x = e.clientX / ZM;
   M.y = e.clientY / ZM;
+  MU.x = e.clientX;
+  MU.y = e.clientY;
 });
 addEventListener('mousedown', (e) => {
   M.x = e.clientX / ZM;
   M.y = e.clientY / ZM;
-  const u = uiHit(M.x, M.y);
+  MU.x = e.clientX;
+  MU.y = e.clientY;
+  const u = uiHit(MU.x, MU.y);
   if (u) {
     uiAct(u);
     return;
   }
   if ((S == 'menu' || S == 'dead') && deadT <= 0) init();
   else if (S == 'levelup') {
-    const i = cardAt(M.x, M.y);
+    const i = cardAt(MU.x, MU.y);
     if (i >= 0) pickCard(i);
   }
 });

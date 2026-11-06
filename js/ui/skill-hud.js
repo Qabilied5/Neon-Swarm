@@ -6,8 +6,8 @@ function skillHud() {
     ['r', 'R', '#b967ff'],
     ['c', 'C', '#39ff88'],
   ].forEach((k, i) => {
-    const x = W / 2 - 108 + i * 56,
-      y = H - 62,
+    const x = UW / 2 - 108 + i * 56,
+      y = UH - 62,
       isC = k[0] == 'c',
       lv = isC ? 1 : P.sk[k[0]],
       cd = P.cd[k[0]];
