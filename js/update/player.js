@@ -8,10 +8,16 @@ function updPlayer(dt) {
   }
   const l = JS.on ? 1 : Math.hypot(dx, dy) || 1;
   if (TOUCH) {
-    // TANPA auto aim: arah hanya berubah saat tombol serang digeser keluar deadzone
-    if (AIM.on && AIM.man) P.a = Math.atan2(AIM.y, AIM.x);
-    M.x = P.x + Math.cos(P.a) * 220;
-    M.y = P.y + Math.sin(P.a) * 220;
+    // TANPA auto aim: arah = arah dari pemain ke lingkaran bidik (aktif saat tombol serang ditahan)
+    if (AIM.on) {
+      aimSync(); // lingkaran ikut pemain & tetap di dalam layar
+      P.a = Math.atan2(AIM.y, AIM.x);
+      M.x = P.x + AIM.ox;
+      M.y = P.y + AIM.oy;
+    } else {
+      M.x = P.x + Math.cos(P.a) * 220;
+      M.y = P.y + Math.sin(P.a) * 220;
+    }
   } else P.a = Math.atan2(M.y - P.y, M.x - P.x);
   if (P.dc > 0) P.dc -= dt;
   if (P.inv > 0) P.inv -= dt;

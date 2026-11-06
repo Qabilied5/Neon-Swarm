@@ -14,8 +14,8 @@ Game arcade survival berbasis canvas, bisa dimainkan di desktop dan **HP (landsc
 | | Desktop | Mobile (landscape) |
 |---|---|---|
 | Gerak | WASD / panah | stik kiri (melayang di setengah kiri layar) |
-| Bidik | mouse (tembak otomatis) | geser tombol serang kanan; lepas / di tengah = bidik otomatis |
-| Dash | Space / klik kanan | tombol DASH |
+| Bidik | mouse (tembak otomatis) | tahan tombol serang kanan -> muncul lingkaran bidik, geser jari untuk menggerakkan lingkaran ke mana saja; pemain menembak ke arah lingkaran selama ditahan |
+| Dash | Space / klik kanan | tombol DASH (kanan, sebelah ✚) |
 | Skill | Q / E / R | tombol Q / E / R |
 | Heal | C (cooldown 60 dtk) | tombol ✚ |
 | Pause | P | tombol pause |

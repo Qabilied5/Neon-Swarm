@@ -6,20 +6,53 @@ const TPR = {}; // waktu efek "ditekan" per tombol
 const SK_RANGE = { q: 230, r: 380 };
 const SK_AIMABLE = { q: 1, e: 1, r: 1 };
 
-// set arah bidik dari posisi jari relatif pusat tombol serang
+// BIDIK SERANGAN DASAR: tahan tombol serang -> muncul lingkaran bidik (reticle) di dunia game.
+// Geser jari = lingkaran ikut bergerak (relatif, bisa ke mana saja di layar). Pemain menembak ke arah lingkaran.
+// Posisi lingkaran disimpan sebagai offset (AIM.ox, AIM.oy) dari pemain, jadi ikut bergerak bersama pemain.
+const AIM_GAIN = 2.2; // 1 satuan geser jari = 2.2 satuan gerak lingkaran (jangkauan luas tanpa harus geser jauh)
+const AIM_START = 200; // jarak awal lingkaran dari pemain saat tombol pertama ditahan
+
+// mulai bidik: lingkaran muncul di arah bidik terakhir
+function aimStart(x, y) {
+  const d = AIM.dist || AIM_START;
+  AIM.ox = Math.cos(P.a) * d;
+  AIM.oy = Math.sin(P.a) * d;
+  AIM.lx = x;
+  AIM.ly = y;
+  AIM.man = 1;
+  AIM.kx = AIM.ky = 0;
+  aimSync();
+}
+
+// geser jari -> geser lingkaran
 function aimFrom(x, y) {
-  const a = tui().atk,
-    dx = x - a.x,
+  const a = tui().atk;
+  AIM.ox += (x - AIM.lx) * AIM_GAIN;
+  AIM.oy += (y - AIM.ly) * AIM_GAIN;
+  AIM.lx = x;
+  AIM.ly = y;
+  // knob kecil di tombol serang (hanya umpan balik visual)
+  const dx = x - a.x,
     dy = y - a.y,
-    m = Math.hypot(dx, dy) || 1;
-  AIM.man = m >= a.dead ? 1 : 0; // di tengah tombol = arah bidik terakhir dipertahankan
-  if (AIM.man) {
-    AIM.x = dx / m;
-    AIM.y = dy / m;
-  }
-  const k = Math.min(m, a.aimR) / m; // posisi knob (dibatasi radius)
+    m = Math.hypot(dx, dy) || 1,
+    k = Math.min(m, a.aimR) / m;
   AIM.kx = dx * k;
   AIM.ky = dy * k;
+  aimSync();
+}
+
+// jaga lingkaran tetap di dalam layar + hitung arah tembak. Dipanggil juga tiap frame (pemain bergerak).
+function aimSync() {
+  const m = 14; // margin dari tepi layar
+  AIM.ox = cl(P.x + AIM.ox, m, W - m) - P.x;
+  AIM.oy = cl(P.y + AIM.oy, m, H - m) - P.y;
+  const d = Math.hypot(AIM.ox, AIM.oy);
+  if (d > 6) {
+    // terlalu dekat pemain = arah dipertahankan
+    AIM.x = AIM.ox / d;
+    AIM.y = AIM.oy / d;
+    AIM.dist = d;
+  }
 }
 
 // set arah/jarak bidik skill dari posisi jari relatif pusat tombol skill
@@ -108,7 +141,7 @@ addEventListener(
       if (!AIM.on && Math.hypot(U.atk.x - x, U.atk.y - y) < U.atk.r * 1.35) {
         AIM.on = 1;
         AIM.id = t.identifier;
-        aimFrom(x, y);
+        aimStart(x, y);
         continue;
       }
       if (x < W * 0.5 && !JS.on) {

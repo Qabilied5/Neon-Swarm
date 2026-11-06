@@ -4,11 +4,11 @@ const bs = () => cl(innerHeight / 400, 0.75, 1.2) / ZM; // dibagi ZM agar ukuran
 // Tombol di sekeliling tombol serang. a = sudut (derajat, 180 = kiri tombol serang, searah jarum jam)
 // Tambah tombol baru di sini (+ f = fungsi aksi). Maks ~6 tombol agar tidak berdesakan.
 const TBTN = [
-  { k: 'dash', l: 'DASH', c: '#ffd166', a: 180, r: 30, f: () => dash() },
+  { k: 'dash', l: 'DASH', c: '#ffd166', a: 348, r: 30, f: () => dash() },
   { k: 'q', l: 'Q', c: '#22d3ee', a: 222, r: 26, f: () => nova() },
   { k: 'e', l: 'E', c: '#ff2e63', a: 264, r: 26, f: () => laser() },
   { k: 'r', l: 'R', c: '#b967ff', a: 306, r: 26, f: () => hole() },
-  { k: 'c', l: '✚', c: '#39ff88', a: 348, r: 26, f: () => heal() },
+  { k: 'c', l: '✚', c: '#39ff88', a: 180, r: 26, f: () => heal() },
 ];
 
 let TUI = null;
@@ -16,7 +16,7 @@ function buildTUI() {
   const u = bs(),
     R = 96 * u, // jarak tombol skill dari pusat tombol serang
     ar = 46 * u, // radius tombol serang
-    cx = W - SAFE.r - 12 - R * 0.98 - 26 * u,
+    cx = W - SAFE.r - 12 - R * 0.98 - 30 * u,
     cy = H - SAFE.b - 10 - ar,
     sr = 55 * u; // radius stik kiri
   return {

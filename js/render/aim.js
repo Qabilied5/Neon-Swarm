@@ -23,6 +23,7 @@ function drawAim() {
   g.lineTo(ex - ux * sz + uy * sz * 0.75, ey - uy * sz - ux * sz * 0.75);
   g.stroke();
   g.lineCap = 'butt';
+  if (on) drawReticle(u);
   if (SK.on) drawSkillAim();
   g.globalAlpha = 1;
 }
@@ -73,4 +74,48 @@ function drawSkillAim() {
     }
   }
   g.setLineDash([]);
+}
+
+// lingkaran bidik serangan dasar: bisa digeser ke mana saja selama tombol serang ditahan
+function drawReticle(u) {
+  const rx = P.x + AIM.ox,
+    ry = P.y + AIM.oy,
+    r = 20 * u,
+    c = '#ff2e63';
+  g.strokeStyle = c;
+  g.shadowColor = c;
+  g.shadowBlur = 8;
+  // garis putus-putus pemain -> lingkaran
+  g.globalAlpha = 0.35;
+  g.lineWidth = 2;
+  g.setLineDash([6 * u, 8 * u]);
+  g.beginPath();
+  g.moveTo(P.x, P.y);
+  g.lineTo(rx, ry);
+  g.stroke();
+  g.setLineDash([]);
+  // cincin + titik tengah + 4 garis bidik
+  g.globalAlpha = 0.95;
+  g.lineWidth = 3;
+  g.beginPath();
+  g.arc(rx, ry, r, 0, TAU);
+  g.stroke();
+  g.lineWidth = 2;
+  g.beginPath();
+  for (const [dx, dy] of [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ]) {
+    g.moveTo(rx + dx * r * 0.55, ry + dy * r * 0.55);
+    g.lineTo(rx + dx * r * 1.45, ry + dy * r * 1.45);
+  }
+  g.stroke();
+  g.fillStyle = c;
+  g.beginPath();
+  g.arc(rx, ry, 2.5 * u, 0, TAU);
+  g.fill();
+  g.shadowBlur = 0;
+  g.globalAlpha = 1;
 }
