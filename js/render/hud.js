@@ -1,7 +1,9 @@
 // Vignette, flash merah, HUD (HP, XP, skor, wave, boss bar)
 function drawOverlayFx() {
+  // WAJIB ikut ZM: HUD, tombol sentuh, menu, dll. semua dihitung dalam koordinat logis (W,H = layar / ZM).
+  // Tanpa ZM, semuanya tergambar 1:1 di layar yang lebih kecil -> kanan & bawah terpotong.
   const d = Math.min(devicePixelRatio || 1, 2);
-  g.setTransform(d, 0, 0, d, 0, 0);
+  g.setTransform(d * ZM, 0, 0, d * ZM, 0, 0);
   const v = g.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.9);
   v.addColorStop(0, 'transparent');
   v.addColorStop(1, 'rgba(0,0,0,.65)');

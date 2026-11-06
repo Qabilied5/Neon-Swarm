@@ -23,12 +23,15 @@ function rs() {
   ZM = matchMedia('(pointer: coarse)').matches ? ZOOM_TOUCH : 1;
   W = innerWidth / ZM; // W,H = ukuran dunia logis (lebih besar dari layar saat zoom-out)
   H = innerHeight / ZM;
-  cv.width = innerWidth * d;
-  cv.height = innerHeight * d;
+  cv.width = Math.round(innerWidth * d);
+  cv.height = Math.round(innerHeight * d);
+  cv.style.width = innerWidth + 'px'; // samakan ukuran CSS dengan viewport asli (hindari 100% yang melar di address bar HP)
+  cv.style.height = innerHeight + 'px';
   g.setTransform(d * ZM, 0, 0, d * ZM, 0, 0);
   readSafe();
   PORTRAIT = matchMedia('(orientation: portrait) and (pointer: coarse)').matches;
 }
 addEventListener('resize', rs);
+if (window.visualViewport) visualViewport.addEventListener('resize', rs); // address bar HP muncul / hilang
 addEventListener('orientationchange', () => setTimeout(rs, 250)); // iOS: ukuran baru telat terbaca
 rs();
